@@ -14,7 +14,7 @@ def getGitRevision = { ->
 }
 
 group = 'yearnlune.lab'
-version = '0.0.${getGitRevision()}'
+version = "0.0.${getGitRevision()}"
 sourceCompatibility = '1.8'
 
 configurations {
