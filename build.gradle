@@ -4,8 +4,17 @@ plugins {
     id 'java'
 }
 
+def getGitRevision = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 group = 'yearnlune.lab'
-version = '0.0.1'
+version = '0.0.${getGitRevision()}'
 sourceCompatibility = '1.8'
 
 configurations {
