@@ -3,6 +3,7 @@ package yearnlune.lab.namingcenter.database.table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 
 import javax.persistence.*;
 
@@ -26,6 +27,12 @@ public class Account {
 
     @Builder
     public Account(String id, String name, String password) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+    }
+
+    public Account(AccountDTO.RegisterRequest registerRequest) {
         this.id = id;
         this.name = name;
         this.password = password;
