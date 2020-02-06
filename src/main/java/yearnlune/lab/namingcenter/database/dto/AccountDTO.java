@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class AccountDTO {
 
+    @Getter
     @NoArgsConstructor
     public static class RegisterRequest {
         private String id;

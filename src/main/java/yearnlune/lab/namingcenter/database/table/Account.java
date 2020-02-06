@@ -33,8 +33,8 @@ public class Account {
     }
 
     public Account(AccountDTO.RegisterRequest registerRequest) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
+        this.id = registerRequest.getId();
+        this.name = registerRequest.getName();
+        this.password = registerRequest.getPassword();
     }
 }
