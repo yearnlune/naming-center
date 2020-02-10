@@ -1,0 +1,3 @@
+[submodule "src/main/java/yearnlune/lab/namingcenter/util"]
+	path = src/main/java/yearnlune/lab/namingcenter/util
+	url = https://github.com/yearnlune/convert-object.git
