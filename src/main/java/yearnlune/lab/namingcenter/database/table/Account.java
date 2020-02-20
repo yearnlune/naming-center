@@ -3,6 +3,7 @@ package yearnlune.lab.namingcenter.database.table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "ot_acnt")
 @NoArgsConstructor
 @Getter
+@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

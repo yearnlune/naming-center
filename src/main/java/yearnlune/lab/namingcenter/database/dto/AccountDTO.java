@@ -1,6 +1,7 @@
 package yearnlune.lab.namingcenter.database.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class AccountDTO {
 
-    @Getter
+    @Data
     @NoArgsConstructor
     public static class RegisterRequest {
         private String id;
