@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import yearnlune.lab.namingcenter.database.dto.AccountDTO;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "ot_acnt")
@@ -27,16 +29,20 @@ public class Account {
     @Column(length = 128, nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
     @Builder
-    public Account(String id, String name, String password) {
+    public Account(String id, String name, String password, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.createdAt = createdAt;
     }
 
-    public Account(AccountDTO.RegisterRequest registerRequest) {
-        this.id = registerRequest.getId();
-        this.name = registerRequest.getName();
-        this.password = registerRequest.getPassword();
+    public Account passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+        return this;
     }
 }
