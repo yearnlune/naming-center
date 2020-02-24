@@ -24,7 +24,7 @@ import java.time.Duration;
 
 @Configuration
 public class RedisConfig {
-    @Value("${spring.redis.host:}")
+    @Value("${spring.redis.host:redis}")
     private String redisHost;
     @Value("${spring.redis.port:6379}")
     private Integer redisPort;
@@ -42,8 +42,7 @@ public class RedisConfig {
 
         jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
         jedisClientConfigurationBuilder.connectTimeout(Duration.ofSeconds(redisTimeOut));
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build());
-        return jedisConnectionFactory;
+        return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build());
     }
 
     @Bean(name = "redisTemplate")
