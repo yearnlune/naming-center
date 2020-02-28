@@ -4,15 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import yearnlune.lab.namingcenter.constant.AccountConstant;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.service.AccountService;
 import yearnlune.lab.namingcenter.database.table.Account;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
 
 /**
  * Project : naming-center
@@ -28,7 +30,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping("/account")
+    @RequestMapping(value = ACCOUNT, method = RequestMethod.POST)
     public ResponseEntity<Account> createAccount(
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.RegisterRequest registerRequest) {
