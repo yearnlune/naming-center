@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import yearnlune.lab.namingcenter.constant.AccountConstant;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.service.AccountService;
 import yearnlune.lab.namingcenter.database.table.Account;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
-
+import static yearnlune.lab.namingcenter.constant.AccountConstant.ACCOUNT;
+import static yearnlune.lab.namingcenter.constant.AccountConstant.LOGIN;
 /**
  * Project : naming-center
  * Created by IntelliJ IDEA
@@ -31,10 +30,10 @@ public class AccountController {
     private AccountService accountService;
 
     @RequestMapping(value = ACCOUNT, method = RequestMethod.POST)
-    public ResponseEntity<Account> createAccount(
+    public ResponseEntity<AccountDTO.CommonResponse> createAccount(
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.RegisterRequest registerRequest) {
-        Account account = accountService.saveAccountIfNotExist(registerRequest);
+        AccountDTO.CommonResponse account = accountService.saveAccountIfNotExist(registerRequest);
         return new ResponseEntity<>(account, HttpStatus.OK);
     }
 }

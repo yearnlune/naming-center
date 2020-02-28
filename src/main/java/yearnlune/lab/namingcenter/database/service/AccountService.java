@@ -24,9 +24,13 @@ public class AccountService {
         return accountRepository.existsById(id);
     }
 
-    public Account saveAccountIfNotExist(AccountDTO.RegisterRequest registerRequest) {
+    private AccountDTO.CommonResponse convertToCommonResponse(Account account) {
+        return ConvertObject.object2Object(account, AccountDTO.CommonResponse.class);
+    }
+
+    public AccountDTO.CommonResponse saveAccountIfNotExist(AccountDTO.RegisterRequest registerRequest) {
         if (!hasAccount(registerRequest.getId())) {
-            return accountRepository.save(ConvertObject.object2Object(registerRequest, Account.class).passwordEncode(passwordEncoder));
+            return convertToCommonResponse(accountRepository.save(ConvertObject.object2Object(registerRequest, Account.class).passwordEncode(passwordEncoder)));
         }
         return null;
     }
