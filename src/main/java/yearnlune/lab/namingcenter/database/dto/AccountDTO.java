@@ -26,4 +26,18 @@ public class AccountDTO {
             this.password = password;
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class LoginRequest {
+        private String id;
+
+        private String password;
+
+        @Builder
+        public LoginRequest(String id, String password) {
+            this.id = id;
+            this.password = password;
+        }
+    }
 }
