@@ -36,4 +36,12 @@ public class AccountController {
         AccountDTO.CommonResponse account = accountService.saveAccountIfNotExist(registerRequest);
         return new ResponseEntity<>(account, HttpStatus.OK);
     }
+
+    @RequestMapping(value = LOGIN, method = RequestMethod.POST)
+    public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
+            HttpServletResponse httpServletResponse,
+            @RequestBody AccountDTO.LoginRequest loginRequest) {
+        AccountDTO.CommonResponse account = accountService.loginAccount(loginRequest);
+        return new ResponseEntity<>(account, HttpStatus.OK);
+    }
 }

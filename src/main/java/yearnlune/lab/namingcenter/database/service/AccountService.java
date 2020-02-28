@@ -1,6 +1,5 @@
 package yearnlune.lab.namingcenter.database.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yearnlune.lab.convertobject.ConvertObject;
@@ -35,4 +34,19 @@ public class AccountService {
         return null;
     }
 
+    public AccountDTO.CommonResponse loginAccount(AccountDTO.LoginRequest loginRequest) {
+        Account account = accountRepository.findById(loginRequest.getId()).orElse(null);
+
+        // TODO Account 존재하지 않을 경우
+        if (account == null) {
+            return null;
+        }
+
+        if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
+            return convertToCommonResponse(account);
+        } else {
+            // TODO Account 비번이 틀렸을 경우
+            return null;
+        }
+    }
 }
