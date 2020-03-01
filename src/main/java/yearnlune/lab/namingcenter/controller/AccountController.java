@@ -26,8 +26,11 @@ import static yearnlune.lab.namingcenter.constant.AccountConstant.LOGIN;
 @RestController
 public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @RequestMapping(value = ACCOUNT, method = RequestMethod.POST)
     public ResponseEntity<AccountDTO.CommonResponse> createAccount(

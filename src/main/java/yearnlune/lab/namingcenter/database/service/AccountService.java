@@ -9,7 +9,6 @@ import yearnlune.lab.namingcenter.database.table.Account;
 
 @Service
 public class AccountService {
-
     private final PasswordEncoder passwordEncoder;
 
     private final AccountRepository accountRepository;

@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "ot_acnt")
@@ -32,6 +34,9 @@ public class Account {
     @Column(nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "account")
+    public Set<Naming> agents = new LinkedHashSet<>();
 
     @Builder
     public Account(String id, String name, String password, Timestamp createdAt) {
