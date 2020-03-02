@@ -33,6 +33,10 @@ public class RedisConfig {
     @Value("${spring.redis.timeout:30}")
     private int redisTimeOut;
 
+    public static final String REDIS_ACCOUNT = "ACCOUNTS";
+
+    public static final String REDIS_LOGIN_FAILED = "LOGIN_FAILED";
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfigurationBuilder;
@@ -46,8 +50,8 @@ public class RedisConfig {
     }
 
     @Bean(name = "redisTemplate")
-    RedisTemplate<String, Object> redisTemplate() {
-        final RedisTemplate<String, Object> template =  new RedisTemplate<>();
+    RedisTemplate<String, Integer> redisTemplate() {
+        final RedisTemplate<String, Integer> template =  new RedisTemplate<>();
         template.setEnableDefaultSerializer(false);
         template.setConnectionFactory( jedisConnectionFactory() );
         template.setKeySerializer( new StringRedisSerializer() );
