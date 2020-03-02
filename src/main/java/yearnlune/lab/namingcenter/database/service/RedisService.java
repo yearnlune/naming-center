@@ -18,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class RedisService {
-    private static int INIT_LOGIN_FAIL_COUNT = 0;
+    private static final Integer INIT_LOGIN_FAIL_COUNT = 0;
 
     private static final Integer MAX_LOGIN_FAIL_COUNT = 5;
+
+    private static final Integer MAX_LOGIN_LOCKED_SECONDS = 180;
 
     private final RedisTemplate<String, Integer> redisTemplate;
 
@@ -39,7 +41,7 @@ public class RedisService {
         Integer increasedLoginFailCount = loginFailCount + 1;
 
         if (increasedLoginFailCount.intValue() == MAX_LOGIN_FAIL_COUNT) {
-            redisTemplate.opsForValue().set(redisKey, increasedLoginFailCount, 180000, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(redisKey, increasedLoginFailCount, MAX_LOGIN_LOCKED_SECONDS, TimeUnit.SECONDS);
         } else {
             redisTemplate.opsForValue().set(redisKey, increasedLoginFailCount);
         }
