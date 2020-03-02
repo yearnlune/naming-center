@@ -32,7 +32,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = ACCOUNT, method = RequestMethod.POST)
-    public ResponseEntity<AccountDTO.CommonResponse> createAccount(
+    public ResponseEntity<AccountDTO.CommonResponse> registerAccount(
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.RegisterRequest registerRequest) {
         AccountDTO.CommonResponse account = accountService.saveAccountIfNotExist(registerRequest);

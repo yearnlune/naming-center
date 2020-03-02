@@ -51,10 +51,7 @@ public class RedisService {
         String redisKey = makeRedisKey(loginId);
         Integer loginFailCount = getLoginFailCountIfExist(redisKey);
 
-        if (loginFailCount < MAX_LOGIN_FAIL_COUNT) {
-            return false;
-        }
-        return true;
+        return loginFailCount >= MAX_LOGIN_FAIL_COUNT;
     }
 
     private String makeRedisKey(String loginId) {
