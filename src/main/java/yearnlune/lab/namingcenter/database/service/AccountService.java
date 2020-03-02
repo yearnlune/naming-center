@@ -1,5 +1,8 @@
 package yearnlune.lab.namingcenter.database.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yearnlune.lab.convertobject.ConvertObject;
@@ -7,23 +10,19 @@ import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.repository.AccountRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 
+@Slf4j
 @Service
 public class AccountService {
     private final PasswordEncoder passwordEncoder;
 
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    private final RedisService redisService;
+
+    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, RedisService redisService) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    public boolean hasAccount(String id) {
-        return accountRepository.existsById(id);
-    }
-
-    private AccountDTO.CommonResponse convertToCommonResponse(Account account) {
-        return ConvertObject.object2Object(account, AccountDTO.CommonResponse.class);
+        this.redisService = redisService;
     }
 
     public AccountDTO.CommonResponse saveAccountIfNotExist(AccountDTO.RegisterRequest registerRequest) {
@@ -33,19 +32,32 @@ public class AccountService {
         return null;
     }
 
-    public AccountDTO.CommonResponse loginAccount(AccountDTO.LoginRequest loginRequest) {
+    public Pair<AccountDTO.CommonResponse, HttpStatus> loginAccount(AccountDTO.LoginRequest loginRequest) {
+        if (redisService.isLoginLock(loginRequest.getId())) {
+            return Pair.of(null, HttpStatus.TOO_MANY_REQUESTS);
+        }
+
         Account account = accountRepository.findById(loginRequest.getId()).orElse(null);
 
-        // TODO Account 존재하지 않을 경우
-        if (account == null) {
-            return null;
-        }
-
-        if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
-            return convertToCommonResponse(account);
+        if (account == null || !isCorrectPassword(loginRequest.getPassword(), account.getPassword())) {
+            redisService.increaseLoginFailCount(loginRequest.getId());
+            return Pair.of(null, HttpStatus.UNAUTHORIZED);
         } else {
-            // TODO Account 비번이 틀렸을 경우
-            return null;
+            redisService.initializeLoginFailCount(loginRequest.getId());
+            return Pair.of(convertToCommonResponse(account), HttpStatus.OK);
         }
     }
+
+    private boolean hasAccount(String id) {
+        return accountRepository.existsById(id);
+    }
+
+    private AccountDTO.CommonResponse convertToCommonResponse(Account account) {
+        return ConvertObject.object2Object(account, AccountDTO.CommonResponse.class);
+    }
+
+    private boolean isCorrectPassword(String loginPassword, String accountPassword) {
+        return passwordEncoder.matches(loginPassword, accountPassword);
+    }
+
 }
