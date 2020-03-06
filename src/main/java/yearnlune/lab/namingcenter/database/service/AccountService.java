@@ -34,14 +34,14 @@ public class AccountService {
 
     public Pair<AccountDTO.CommonResponse, HttpStatus> loginAccount(AccountDTO.LoginRequest loginRequest) {
         if (redisService.isLoginLock(loginRequest.getId())) {
-            return Pair.of(null, HttpStatus.TOO_MANY_REQUESTS);
+            return Pair.of(AccountDTO.CommonResponse.builder().build(), HttpStatus.TOO_MANY_REQUESTS);
         }
 
         Account account = accountRepository.findById(loginRequest.getId()).orElse(null);
 
         if (account == null || !isCorrectPassword(loginRequest.getPassword(), account.getPassword())) {
             redisService.increaseLoginFailCount(loginRequest.getId());
-            return Pair.of(null, HttpStatus.UNAUTHORIZED);
+            return Pair.of(AccountDTO.CommonResponse.builder().build(), HttpStatus.UNAUTHORIZED);
         } else {
             redisService.initializeLoginFailCount(loginRequest.getId());
             return Pair.of(convertToCommonResponse(account), HttpStatus.OK);
