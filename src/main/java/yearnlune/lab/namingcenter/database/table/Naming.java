@@ -46,7 +46,7 @@ public class Naming {
     private Timestamp updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", columnDefinition = "NUMBER", foreignKey = @ForeignKey(name = "fk_ot_acnt_ot_name"))
+    @JoinColumn(name = "account_idx", columnDefinition = "int", foreignKey = @ForeignKey(name = "fk_ot_acnt_ot_name"), nullable = false)
     private Account account;
 
     @Builder
