@@ -3,9 +3,6 @@ package yearnlune.lab.namingcenter.database.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import yearnlune.lab.namingcenter.database.table.Account;
-
-import javax.persistence.Column;
 
 /**
  * Project : naming-center

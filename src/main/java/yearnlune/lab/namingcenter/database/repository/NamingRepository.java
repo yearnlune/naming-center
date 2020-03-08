@@ -11,4 +11,5 @@ import yearnlune.lab.namingcenter.database.table.Naming;
  * DESCRIPTION :
  */
 public interface NamingRepository extends JpaRepository<Naming, Integer> {
+    boolean existsByName(String name);
 }
