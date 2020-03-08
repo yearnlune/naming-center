@@ -37,7 +37,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-redis')
     compile 'redis.clients:jedis:3.1.0'
 
-    implementation 'yearnlune.lab:convert-object:0.0.10'
+    implementation 'yearnlune.lab:convert-object:0.0.12'
 
     /* LOMBOK */
     compileOnly 'org.projectlombok:lombok'
