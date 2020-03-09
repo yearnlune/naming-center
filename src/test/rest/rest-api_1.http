@@ -24,3 +24,17 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:8888/naming
+Content-Type: application/json
+
+{
+  "name": "TEST",
+  "description": "password",
+  "account": {
+    "idx": 1,
+    "id": "TEST",
+    "name": "TEST_NAME"
+  }
+}
+
+###

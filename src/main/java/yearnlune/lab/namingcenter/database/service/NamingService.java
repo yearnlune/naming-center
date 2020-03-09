@@ -10,6 +10,8 @@ import yearnlune.lab.namingcenter.database.repository.NamingRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.database.table.Naming;
 
+import java.util.List;
+
 /**
  * Project : naming-center
  * Created by IntelliJ IDEA
@@ -29,9 +31,21 @@ public class NamingService {
     }
 
     public NamingDTO.CommonResponse saveNamingIfNotExist(NamingDTO.RegisterRequest registerRequest) {
+        Naming name = ConvertObject.object2Object(registerRequest, Naming.class);
         if (!hasNaming(registerRequest.getName())) {
-            return convertToCommonResponse(namingRepository.save(ConvertObject.object2Object(registerRequest, Naming.class)));
+            return convertToCommonResponse(namingRepository.save(
+                    Naming.builder()
+                            .name(registerRequest.getName())
+                            .description(registerRequest.getDescription())
+                            .account(ConvertObject.object2Object(registerRequest.getAccount(), Account.class))
+                            .build()
+                    ));
         }
+        return null;
+    }
+
+    public List<NamingDTO.CommonResponse> findNaming(String term) {
+//        return namingRepository.findAllByNameLikeOrDescriptionLike(term);
         return null;
     }
 
