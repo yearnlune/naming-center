@@ -34,7 +34,7 @@ public class Naming {
     @Column(length = 128, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @Column(nullable = false)
@@ -44,6 +44,9 @@ public class Naming {
     @Column(nullable = false)
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    @Column(length = 256)
+    private String keyword;
 
     @ManyToOne
     @JoinColumn(name = "account_idx", columnDefinition = "int", foreignKey = @ForeignKey(name = "fk_ot_acnt_ot_name"), nullable = false)
@@ -55,6 +58,7 @@ public class Naming {
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.keyword = (name + "|" + description).toLowerCase();
         this.account = account;
     }
 }
