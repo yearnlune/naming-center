@@ -38,3 +38,8 @@ Content-Type: application/json
 }
 
 ###
+
+GET http://localhost:8888/naming/pass
+Content-Type: application/json
+
+###

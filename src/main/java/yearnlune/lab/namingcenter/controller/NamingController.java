@@ -3,14 +3,13 @@ package yearnlune.lab.namingcenter.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yearnlune.lab.namingcenter.database.dto.NamingDTO;
 import yearnlune.lab.namingcenter.database.service.NamingService;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 import static yearnlune.lab.namingcenter.constant.AccountConstant.NAMING;
 
@@ -38,5 +37,13 @@ public class NamingController {
             @RequestBody NamingDTO.RegisterRequest registerRequest) {
         NamingDTO.CommonResponse naming = namingService.saveNamingIfNotExist(registerRequest);
         return new ResponseEntity<>(naming, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = NAMING + "/{keyword}", method = RequestMethod.GET)
+    public ResponseEntity<List<NamingDTO.CommonResponse>> searchNaming(
+            HttpServletResponse httpServletResponse,
+            @PathVariable String keyword) {
+        List<NamingDTO.CommonResponse> namingList = namingService.findNaming(keyword);
+        return new ResponseEntity<>(namingList, HttpStatus.OK);
     }
 }

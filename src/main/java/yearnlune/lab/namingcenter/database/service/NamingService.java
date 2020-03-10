@@ -10,6 +10,7 @@ import yearnlune.lab.namingcenter.database.repository.NamingRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.database.table.Naming;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,9 +45,8 @@ public class NamingService {
         return null;
     }
 
-    public List<NamingDTO.CommonResponse> findNaming(String term) {
-//        return namingRepository.findAllByNameLikeOrDescriptionLike(term);
-        return null;
+    public List<NamingDTO.CommonResponse> findNaming(String keyword) {
+        return convertToCommonResponse(namingRepository.findAllByKeywordContaining(keyword));
     }
 
     private boolean hasNaming(String name) {
@@ -55,5 +55,13 @@ public class NamingService {
 
     private NamingDTO.CommonResponse convertToCommonResponse(Naming naming) {
         return ConvertObject.object2Object(naming, NamingDTO.CommonResponse.class);
+    }
+
+    private List<NamingDTO.CommonResponse> convertToCommonResponse(List<Naming> namingList) {
+        List<NamingDTO.CommonResponse> refinedNamingList = new ArrayList<>();
+        for (Naming naming : namingList) {
+            refinedNamingList.add(convertToCommonResponse(naming));
+        }
+        return refinedNamingList;
     }
 }

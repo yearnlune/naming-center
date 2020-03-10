@@ -2,12 +2,7 @@ package yearnlune.lab.namingcenter.database.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
-import javax.persistence.*;
-import java.sql.Timestamp;
 
 @NoArgsConstructor
 public class AccountDTO {
