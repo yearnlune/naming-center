@@ -31,7 +31,7 @@ public class NamingController {
         this.namingService = namingService;
     }
 
-    @RequestMapping(value = NAMING, method = RequestMethod.POST)
+    @PostMapping(value = NAMING)
     public ResponseEntity<NamingDTO.CommonResponse> registerNaming(
             HttpServletResponse httpServletResponse,
             @RequestBody NamingDTO.RegisterRequest registerRequest) {
@@ -39,7 +39,7 @@ public class NamingController {
         return new ResponseEntity<>(naming, HttpStatus.OK);
     }
 
-    @RequestMapping(value = NAMING + "/{keyword}", method = RequestMethod.GET)
+    @GetMapping(NAMING + "/{keyword}")
     public ResponseEntity<List<NamingDTO.CommonResponse>> searchNaming(
             HttpServletResponse httpServletResponse,
             @PathVariable String keyword) {
