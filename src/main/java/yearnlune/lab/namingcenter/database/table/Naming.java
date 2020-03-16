@@ -48,17 +48,12 @@ public class Naming {
     @Column(length = 256)
     private String keyword;
 
-    @ManyToOne
-    @JoinColumn(name = "account_idx", columnDefinition = "int", foreignKey = @ForeignKey(name = "fk_ot_acnt_ot_name"), nullable = false)
-    private Account account;
-
     @Builder
-    public Naming(String name, String description, Timestamp createdAt, Timestamp updatedAt, Account account) {
+    public Naming(String name, String description, Timestamp createdAt, Timestamp updatedAt) {
         this.name = name;
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.keyword = (name + "|" + description).toLowerCase();
-        this.account = account;
     }
 }

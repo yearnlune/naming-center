@@ -38,7 +38,6 @@ public class NamingService {
                     Naming.builder()
                             .name(registerRequest.getName())
                             .description(registerRequest.getDescription())
-                            .account(ConvertObject.object2Object(registerRequest.getAccount(), Account.class))
                             .build()
                     ));
         }

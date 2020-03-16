@@ -35,9 +35,6 @@ public class Account {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "account")
-    public Set<Naming> agents = new LinkedHashSet<>();
-
     @Builder
     public Account(String id, String name, String password, Timestamp createdAt) {
         this.id = id;
