@@ -33,7 +33,7 @@ public class Account {
     @Column(length = 128, nullable = false)
     private String password;
 
-    @Column(length = 64, nullable = false, columnDefinition = "ROLE_GUEST")
+    @Column(columnDefinition = "varchar(64) DEFAULT 'ROLE_GUEST'", nullable = false)
     private String role;
 
     @Column(nullable = false)
