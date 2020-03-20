@@ -1,2 +1,8 @@
 spring:
   application.name: naming-center
+
+# HEALTH_CHECK
+management:
+  endpoints:
+    web:
+      base-path: /_/
