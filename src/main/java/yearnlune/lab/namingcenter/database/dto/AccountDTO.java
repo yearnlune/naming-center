@@ -16,11 +16,14 @@ public class AccountDTO {
 
         private String name;
 
+        private String role;
+
         @Builder
-        public CommonResponse(Integer idx, String id, String name) {
+        public CommonResponse(Integer idx, String id, String name, String role) {
             this.idx = idx;
             this.id = id;
             this.name = name;
+            this.role = role;
         }
     }
 

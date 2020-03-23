@@ -34,7 +34,7 @@ public class Account {
     private String password;
 
     @Column(columnDefinition = "varchar(64) DEFAULT 'ROLE_GUEST'", nullable = false)
-    private String role;
+    private String role = "ROLE_GUEST";
 
     @Column(nullable = false)
     @CreationTimestamp
