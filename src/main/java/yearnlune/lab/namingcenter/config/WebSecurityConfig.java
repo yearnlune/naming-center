@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import yearnlune.lab.namingcenter.constant.AccountRoleEnum;
 
 /**
  * Project : naming-center
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
  */
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.profiles:}")
     String profile;
@@ -34,8 +35,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .formLogin().disable()
-                .httpBasic().disable()
-                .authorizeRequests().anyRequest().permitAll();
+                .addFilterAfter(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers("/error").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/accounts").permitAll()
+                .antMatchers("/admin").access(AccountRoleEnum.valueOf("ADMIN").getValue())
+                .anyRequest().authenticated();
     }
 
     @Bean

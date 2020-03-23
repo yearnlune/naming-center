@@ -1,0 +1,86 @@
+package yearnlune.lab.namingcenter.config;
+
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Project : naming-center
+ * Created by IntelliJ IDEA
+ * Author : DONGHWAN, KIM
+ * DATE : 2020.03.20
+ * DESCRIPTION :
+ */
+
+@Slf4j
+public class AuthenticationFilter extends OncePerRequestFilter {
+
+    public static final String HEADER = "Authorization";
+    public static final String PREFIX = "Bearer ";
+    public static final String SECRET_KEY = "namingCenter";
+    public static final int DURATION = 600000;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        StringBuilder sb = new StringBuilder();
+        try {
+            sb.append(request.getMethod());
+            sb.append(" | ");
+            sb.append(request.getRequestURI());
+
+            if (checkJWTToken(request, response)) {
+                Claims claims = validateToken(request);
+                if ( claims.get("authorities") != null) {
+                    setUsernamePasswordAuthentication(claims);
+                } else {
+                    SecurityContextHolder.clearContext();
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (SignatureException | ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+            sb.insert(0, "ERROR ");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+        } finally {
+            Object sc = SecurityContextHolder.getContext().getAuthentication();
+            if (sc != null) {
+                sb.append(" | " + sc.toString());
+            }
+
+            log.info(sb.toString());
+
+        }
+    }
+
+    private Claims validateToken(HttpServletRequest request) {
+        String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
+        return Jwts.parser().setSigningKey(SECRET_KEY.getBytes()).parseClaimsJws(jwtToken).getBody();
+    }
+
+    private void setUsernamePasswordAuthentication(Claims claims) {
+        List<String> authorities = (List<String>) claims.get("authorities");
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                claims.getSubject(),
+                null,
+                authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    private boolean checkJWTToken(HttpServletRequest request, HttpServletResponse res) {
+        String authenticationHeader = request.getHeader(HEADER);
+        if (authenticationHeader == null)
+            return false;
+        return true;
+    }
+}
