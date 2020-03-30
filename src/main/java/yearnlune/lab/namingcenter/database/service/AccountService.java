@@ -1,14 +1,25 @@
 package yearnlune.lab.namingcenter.database.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yearnlune.lab.convertobject.ConvertObject;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.repository.AccountRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static yearnlune.lab.namingcenter.config.AuthenticationFilter.DURATION;
+import static yearnlune.lab.namingcenter.config.AuthenticationFilter.SECRET_KEY;
 
 @Slf4j
 @Service
@@ -46,6 +57,23 @@ public class AccountService {
             redisService.initializeLoginFailCount(loginRequest.getId());
             return Pair.of(convertToCommonResponse(account), HttpStatus.OK);
         }
+    }
+
+    public String createAuthorizationToken(AccountDTO.CommonResponse account) {
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(account.getRole());
+
+        return Jwts.builder()
+                .setSubject("namingCenterJWT")
+                .setIssuer("namingCenter")
+                .claim("authorities",
+                        grantedAuthorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList()))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + DURATION))
+                .signWith(SignatureAlgorithm.HS512,
+                        SECRET_KEY.getBytes())
+                .compact();
     }
 
     private boolean hasAccount(String id) {

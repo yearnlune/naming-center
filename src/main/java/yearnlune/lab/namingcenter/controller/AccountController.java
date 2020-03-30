@@ -1,12 +1,15 @@
 package yearnlune.lab.namingcenter.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yearnlune.lab.namingcenter.config.AuthenticationFilter;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.service.AccountService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import static yearnlune.lab.namingcenter.constant.AccountConstant.ACCOUNT;
@@ -19,6 +22,7 @@ import static yearnlune.lab.namingcenter.constant.AccountConstant.LOGIN;
  * DESCRIPTION :
  */
 
+@Slf4j
 @RestController
 public class AccountController {
 
@@ -41,6 +45,18 @@ public class AccountController {
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.LoginRequest loginRequest) {
         Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
+        String authorizationToken = null;
+        if (account != null) {
+            authorizationToken = accountService.createAuthorizationToken(account.getFirst());
+        }
+
+        httpServletResponse.addHeader("Authorization", AuthenticationFilter.PREFIX + authorizationToken);
+
+        Cookie jwtCookie = new Cookie("jwt", authorizationToken);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+        httpServletResponse.addCookie(jwtCookie);
+
         return new ResponseEntity<>(account.getFirst(), account.getSecond());
     }
 }

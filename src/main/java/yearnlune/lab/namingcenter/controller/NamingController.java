@@ -23,6 +23,7 @@ import static yearnlune.lab.namingcenter.constant.AccountConstant.NAMING;
 
 @Slf4j
 @RestController
+@RequestMapping(NAMING)
 public class NamingController {
 
     private final NamingService namingService;
@@ -31,7 +32,7 @@ public class NamingController {
         this.namingService = namingService;
     }
 
-    @PostMapping(value = NAMING)
+    @PostMapping
     public ResponseEntity<NamingDTO.CommonResponse> registerNaming(
             HttpServletResponse httpServletResponse,
             @RequestBody NamingDTO.RegisterRequest registerRequest) {
@@ -39,7 +40,7 @@ public class NamingController {
         return new ResponseEntity<>(naming, HttpStatus.OK);
     }
 
-    @GetMapping(NAMING + "/{keyword}")
+    @GetMapping("/{keyword}")
     public ResponseEntity<List<NamingDTO.CommonResponse>> searchNaming(
             HttpServletResponse httpServletResponse,
             @PathVariable String keyword) {
