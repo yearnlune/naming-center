@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import yearnlune.lab.namingcenter.database.service.LogService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
+@Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     public static final String HEADER = "Authorization";
@@ -31,9 +34,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     public static final String SECRET_KEY = "namingCenter";
     public static final int DURATION = 600000;
 
+    final LogService logService;
+
+    public AuthenticationFilter(LogService logService) {
+        this.logService = logService;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         StringBuilder sb = new StringBuilder();
+        String accountId = null;
         try {
             sb.append(request.getMethod());
             sb.append(" | ");
@@ -41,8 +51,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             if (checkJWTToken(request, response)) {
                 Claims claims = validateToken(request);
-                if ( claims.get("authorities") != null) {
+                if (claims.get("authorities") != null) {
                     setUsernamePasswordAuthentication(claims);
+                    accountId = (String) claims.get("id");
                 } else {
                     SecurityContextHolder.clearContext();
                 }
@@ -58,8 +69,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 sb.append(" | " + sc.toString());
             }
 
-            log.info(sb.toString());
+            log.info(sb.toString() + " | " + accountId);
 
+            logService.saveLog(LogService.LogContent.builder()
+                    .method(request.getMethod())
+                    .remoteAddr(request.getRemoteAddr())
+                    .requestUri(request.getRequestURI())
+                    .build(), accountId);
         }
     }
 
