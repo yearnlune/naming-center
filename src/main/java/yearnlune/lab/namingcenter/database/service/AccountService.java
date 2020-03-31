@@ -69,6 +69,7 @@ public class AccountService {
                         grantedAuthorities.stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
+                .claim("id", account.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + DURATION))
                 .signWith(SignatureAlgorithm.HS512,
