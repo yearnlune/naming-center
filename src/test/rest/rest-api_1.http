@@ -18,12 +18,7 @@ Content-Type: application/json
   "password": "password"
 }
 
-<> 2020-03-06T111312.200.json
-<> 2020-03-06T111149.401.json
-<> 2020-03-06T110933.500.json
-
 ###
-
 POST http://localhost:8888/naming
 Content-Type: application/json
 
@@ -41,5 +36,7 @@ Content-Type: application/json
 
 GET http://localhost:8888/naming/pass
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiVEVTVCIsImlhdCI6MTU4NTYyMjE3NiwiZXhwIjoxNTg1NjIyNzc2fQ.C5i6D6DH9ID3q1fsTxUfeet58y5Hqqihq6jUzBHNl5s5QwsFM4htvJdX4Z9snqnd-90sP5mEPzWCoJOoX8ETdQ
+Set-Cookie: jwt=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiVEVTVCIsImlhdCI6MTU4NTYyMjE3NiwiZXhwIjoxNTg1NjIyNzc2fQ.C5i6D6DH9ID3q1fsTxUfeet58y5Hqqihq6jUzBHNl5s5QwsFM4htvJdX4Z9snqnd-90sP5mEPzWCoJOoX8ETdQ
 
 ###
