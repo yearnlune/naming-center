@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import yearnlune.lab.namingcenter.database.table.Naming;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,4 +20,6 @@ public interface NamingRepository extends JpaRepository<Naming, Integer> {
     boolean existsByName(String name);
 
     List<Naming> findAllByKeywordContaining(String keyword);
+
+    List<Naming> findAllByUpdatedAtGreaterThanEqual(Timestamp updatedAt);
 }

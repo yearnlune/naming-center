@@ -10,6 +10,7 @@ import yearnlune.lab.namingcenter.database.repository.NamingRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.database.table.Naming;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,5 +63,9 @@ public class NamingService {
             refinedNamingList.add(convertToCommonResponse(naming));
         }
         return refinedNamingList;
+    }
+
+    public List<Naming> findAllUpdatedNaming(Timestamp current) {
+        return namingRepository.findAllByUpdatedAtGreaterThanEqual(current);
     }
 }

@@ -49,11 +49,9 @@ public class Naming {
     private String keyword;
 
     @Builder
-    public Naming(String name, String description, Timestamp createdAt, Timestamp updatedAt) {
+    public Naming(String name, String description) {
         this.name = name;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.keyword = (name + "|" + description).toLowerCase();
     }
 }
