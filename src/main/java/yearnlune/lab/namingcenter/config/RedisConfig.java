@@ -37,6 +37,8 @@ public class RedisConfig {
 
     public static final String REDIS_LOGIN_FAILED = "LOGIN_FAILED";
 
+    public static final String REDIS_NAME = "NAMES";
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfigurationBuilder;

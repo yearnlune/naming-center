@@ -4,7 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import yearnlune.lab.namingcenter.config.RedisConfig;
+import yearnlune.lab.namingcenter.database.table.Naming;
 
+import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,17 +31,43 @@ public class RedisService {
 
     private final RedisTemplate<String, Integer> redisTemplate;
 
-    public RedisService(RedisTemplate<String, Integer> redisTemplate) {
+    private final NamingService namingService;
+
+    private Timestamp previousTime;
+
+    private final TimerTask autoCompleteTask = new TimerTask() {
+        @Override
+        public void run() {
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            List<Naming> updatedNamingList = namingService.findAllUpdatedNaming(previousTime);
+            for (Naming naming : updatedNamingList) {
+                redisTemplate.opsForValue().set(makeNameRedisKey(naming.getName()), 0);
+            }
+            previousTime = currentTime;
+        }
+    };
+
+    public RedisService(RedisTemplate<String, Integer> redisTemplate, NamingService namingService) {
         this.redisTemplate = redisTemplate;
+        this.namingService = namingService;
+    }
+
+    @PostConstruct
+    public void init() {
+        previousTime = new Timestamp(System.currentTimeMillis());
+        List<String> namingList = namingService.findNames();
+        for (String naming : namingList) {
+            redisTemplate.opsForValue().set(makeNameRedisKey(naming), 0);
+        }
     }
 
     public void initializeLoginFailCount(String loginId) {
-        String redisKey = makeRedisKey(loginId);
+        String redisKey = makeLoginFailRedisKey(loginId);
         redisTemplate.opsForValue().set(redisKey, INIT_LOGIN_FAIL_COUNT);
     }
 
     public void increaseLoginFailCount(String loginId) {
-        String redisKey = makeRedisKey(loginId);
+        String redisKey = makeLoginFailRedisKey(loginId);
         Integer loginFailCount = getLoginFailCountIfExist(redisKey);
         Integer increasedLoginFailCount = loginFailCount + 1;
 
@@ -48,14 +79,18 @@ public class RedisService {
     }
 
     public boolean isLoginLock(String loginId) {
-        String redisKey = makeRedisKey(loginId);
+        String redisKey = makeLoginFailRedisKey(loginId);
         Integer loginFailCount = getLoginFailCountIfExist(redisKey);
 
         return loginFailCount >= MAX_LOGIN_FAIL_COUNT;
     }
 
-    private String makeRedisKey(String loginId) {
+    private String makeLoginFailRedisKey(String loginId) {
         return RedisConfig.REDIS_ACCOUNT + ":" + RedisConfig.REDIS_LOGIN_FAILED + ":" + loginId;
+    }
+
+    private String makeNameRedisKey(String name) {
+        return RedisConfig.REDIS_NAME + ":" + name;
     }
 
     private Integer getLoginFailCountIfExist(String redisKey) {

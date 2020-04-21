@@ -68,4 +68,12 @@ public class NamingService {
     public List<Naming> findAllUpdatedNaming(Timestamp current) {
         return namingRepository.findAllByUpdatedAtGreaterThanEqual(current);
     }
+
+    public List<Naming> findAll() {
+        return namingRepository.findAll();
+    }
+
+    public List<String> findNames() {
+        return namingRepository.findNames();
+    }
 }
