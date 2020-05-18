@@ -1,7 +1,6 @@
 package yearnlune.lab.namingcenter.database.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -77,6 +76,20 @@ public class AccountService {
                 .compact();
     }
 
+    public boolean isAvailableToken(String jwt) {
+        boolean isAvailable = false;
+        try {
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .setSigningKey(SECRET_KEY.getBytes())
+                    .parseClaimsJws(jwt);
+            isAvailable = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isAvailable;
+    }
+
     private boolean hasAccount(String id) {
         return accountRepository.existsById(id);
     }
@@ -88,5 +101,6 @@ public class AccountService {
     private boolean isCorrectPassword(String loginPassword, String accountPassword) {
         return passwordEncoder.matches(loginPassword, accountPassword);
     }
+
 
 }

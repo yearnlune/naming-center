@@ -4,16 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import yearnlune.lab.namingcenter.config.AuthenticationFilter;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.service.AccountService;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import static yearnlune.lab.namingcenter.constant.AccountConstant.ACCOUNT;
-import static yearnlune.lab.namingcenter.constant.AccountConstant.LOGIN;
+import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
+
 /**
  * Project : naming-center
  * Created by IntelliJ IDEA
@@ -40,23 +40,23 @@ public class AccountController {
         return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
-    @PostMapping(value = LOGIN)
+    @PostMapping(LOGIN)
     public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.LoginRequest loginRequest) {
+        String authorizationToken;
+
         Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
-        String authorizationToken = null;
-        if (account != null) {
-            authorizationToken = accountService.createAuthorizationToken(account.getFirst());
+
+        if (account.getSecond().equals(HttpStatus.OK)) {
+            account.getFirst().setJwt(accountService.createAuthorizationToken(account.getFirst()));
         }
 
-        httpServletResponse.addHeader("Authorization", AuthenticationFilter.PREFIX + authorizationToken);
-
-        Cookie jwtCookie = new Cookie("jwt", authorizationToken);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        httpServletResponse.addCookie(jwtCookie);
-
         return new ResponseEntity<>(account.getFirst(), account.getSecond());
+    }
+
+    @PostMapping(VALIDATE)
+    public ResponseEntity<String> validateToken(@RequestBody AccountDTO.TokenValidationRequest tokenValidationRequest) {
+        return new ResponseEntity<>("", accountService.isAvailableToken(tokenValidationRequest.getJwt()) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED);
     }
 }

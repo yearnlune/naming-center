@@ -18,12 +18,15 @@ public class AccountDTO {
 
         private String role;
 
+        private String jwt;
+
         @Builder
-        public CommonResponse(Integer idx, String id, String name, String role) {
+        public CommonResponse(Integer idx, String id, String name, String role, String jwt) {
             this.idx = idx;
             this.id = id;
             this.name = name;
             this.role = role;
+            this.jwt = jwt;
         }
     }
 
@@ -55,6 +58,17 @@ public class AccountDTO {
         public LoginRequest(String id, String password) {
             this.id = id;
             this.password = password;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class TokenValidationRequest {
+        private String jwt;
+
+        @Builder
+        public TokenValidationRequest(String jwt) {
+            this.jwt = jwt;
         }
     }
 }
