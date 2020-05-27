@@ -1,18 +1,20 @@
 package yearnlune.lab.namingcenter.database.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import yearnlune.lab.convertobject.ConvertObject;
-import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.dto.NamingDTO;
 import yearnlune.lab.namingcenter.database.repository.NamingRepository;
-import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.database.table.Naming;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static yearnlune.lab.namingcenter.database.service.RedisService.makeNameRedisKey;
 
 /**
  * Project : naming-center
@@ -28,8 +30,17 @@ public class NamingService {
 
     private final NamingRepository namingRepository;
 
-    public NamingService(NamingRepository namingRepository) {
+    private final RedisTemplate<String, Integer> redisTemplate;
+
+    public NamingService(NamingRepository namingRepository, RedisTemplate<String, Integer> redisTemplate) {
         this.namingRepository = namingRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
+    public NamingDTO.AutoCompleteResponse findNamingUsingRedis(String naming) {
+        return NamingDTO.AutoCompleteResponse.builder()
+                .namingList(getNamingListUsingRedis(naming.toLowerCase()))
+                .build();
     }
 
     public NamingDTO.CommonResponse saveNamingIfNotExist(NamingDTO.RegisterRequest registerRequest) {
@@ -37,8 +48,8 @@ public class NamingService {
         if (!hasNaming(registerRequest.getName())) {
             return convertToCommonResponse(namingRepository.save(
                     Naming.builder()
-                            .name(registerRequest.getName())
-                            .description(registerRequest.getDescription())
+                            .name(registerRequest.getName().toLowerCase())
+                            .description(registerRequest.getDescription().toLowerCase())
                             .build()
                     ));
         }
@@ -75,5 +86,19 @@ public class NamingService {
 
     public List<String> findNames() {
         return namingRepository.findNames();
+    }
+
+    private List<String> getNamingListUsingRedis(String naming) {
+        Set<String> namingSet = redisTemplate.keys(makeNameRedisKey(naming) + "*");
+        List<String> namingList = new ArrayList<>();
+        if (namingSet == null) {
+            namingSet = new HashSet<>();
+        }
+
+        for (String key : namingSet) {
+            namingList.add(key.split(":")[1]);
+        }
+
+        return namingList;
     }
 }
