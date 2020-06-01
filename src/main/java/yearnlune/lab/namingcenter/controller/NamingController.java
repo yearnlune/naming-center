@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
+import static yearnlune.lab.namingcenter.constant.AccountConstant.AUTOCOMPLETE;
 import static yearnlune.lab.namingcenter.constant.AccountConstant.NAMING;
 
 /**
@@ -46,5 +47,13 @@ public class NamingController {
             @PathVariable String keyword) {
         List<NamingDTO.CommonResponse> namingList = namingService.findNaming(keyword);
         return new ResponseEntity<>(namingList, HttpStatus.OK);
+    }
+
+    @GetMapping(AUTOCOMPLETE + "/{naming}")
+    public ResponseEntity<NamingDTO.AutoCompleteResponse> getAutocomplete(
+            HttpServletResponse httpServletResponse,
+            @PathVariable String naming) {
+        NamingDTO.AutoCompleteResponse autoCompleteResponse = namingService.findNamingUsingRedis(naming);
+        return new ResponseEntity<>(autoCompleteResponse, HttpStatus.OK);
     }
 }

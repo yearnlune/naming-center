@@ -8,8 +8,7 @@ import yearnlune.lab.namingcenter.database.table.Naming;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -89,7 +88,7 @@ public class RedisService {
         return RedisConfig.REDIS_ACCOUNT + ":" + RedisConfig.REDIS_LOGIN_FAILED + ":" + loginId;
     }
 
-    private String makeNameRedisKey(String name) {
+    public static String makeNameRedisKey(String name) {
         return RedisConfig.REDIS_NAME + ":" + name;
     }
 

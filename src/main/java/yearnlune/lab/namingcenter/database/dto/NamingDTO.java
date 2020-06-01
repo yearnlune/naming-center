@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Project : naming-center
  * Created by IntelliJ IDEA
@@ -48,4 +50,14 @@ public class NamingDTO {
         }
     }
 
+    @Data
+    @NoArgsConstructor
+    public static class AutoCompleteResponse {
+        private List<String> namingList;
+
+        @Builder
+        public AutoCompleteResponse(List<String> namingList) {
+            this.namingList = namingList;
+        }
+    }
 }
