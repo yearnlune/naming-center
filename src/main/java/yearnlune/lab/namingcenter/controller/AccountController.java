@@ -44,8 +44,6 @@ public class AccountController {
     public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
             HttpServletResponse httpServletResponse,
             @RequestBody AccountDTO.LoginRequest loginRequest) {
-        String authorizationToken;
-
         Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
 
         if (account.getSecond().equals(HttpStatus.OK)) {

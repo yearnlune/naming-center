@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java'
+    id "java"
+    id "org.springframework.boot" version "2.2.4.RELEASE"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
 def getGitRevision = { ->
@@ -30,16 +30,17 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.data:spring-data-commons'
 
     /* JWT */
     compile 'io.jsonwebtoken:jjwt:0.9.1'
 
     /* REDIS */
-    implementation('org.springframework.boot:spring-boot-starter-data-redis')
-    compile 'redis.clients:jedis:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.apache.commons:commons-pool2:2.9.0'
 
     implementation 'yearnlune.lab:convert-object:0.0.12'
 
