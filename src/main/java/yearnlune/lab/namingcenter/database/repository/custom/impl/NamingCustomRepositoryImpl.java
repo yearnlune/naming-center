@@ -1,14 +1,10 @@
 package yearnlune.lab.namingcenter.database.repository.custom.impl;
 
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import yearnlune.lab.namingcenter.database.repository.custom.NamingCustomRepository;
 import yearnlune.lab.namingcenter.database.table.Naming;
+import yearnlune.lab.namingcenter.database.table.QNaming;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -19,23 +15,17 @@ import java.util.List;
  * DESCRIPTION :
  */
 
-public class NamingCustomRepositoryImpl implements NamingCustomRepository {
+public class NamingCustomRepositoryImpl extends QuerydslRepositorySupport implements NamingCustomRepository {
 
-    @PersistenceContext
-    EntityManager em;
+    public NamingCustomRepositoryImpl() {
+        super(Naming.class);
+    }
 
     @Override
     public List<String> findNames() {
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<String> criteriaQuery = cb.createQuery(String.class);
-
-        Root<Naming> namingRoot = criteriaQuery.from(Naming.class);
-
-        criteriaQuery.select(namingRoot.get("name"));
-
-        TypedQuery<String> typedQuery = em.createQuery(criteriaQuery);
-
-        return typedQuery.getResultList();
+        QNaming naming = QNaming.naming;
+        return from(naming)
+                .select(naming.name)
+                .fetch();
     }
 }
