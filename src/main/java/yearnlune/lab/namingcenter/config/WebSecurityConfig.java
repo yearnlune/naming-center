@@ -48,6 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .addFilterAfter(new AuthenticationFilter(logService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/error").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/validate").permitAll()

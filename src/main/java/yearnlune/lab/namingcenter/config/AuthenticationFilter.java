@@ -95,8 +95,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private boolean checkJWTToken(HttpServletRequest request, HttpServletResponse res) {
         String authenticationHeader = request.getHeader(HEADER);
-        if (authenticationHeader == null)
-            return false;
-        return true;
+        return authenticationHeader != null;
     }
 }
