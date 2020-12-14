@@ -8,7 +8,6 @@ import yearnlune.lab.namingcenter.database.dto.NamingDTO;
 import yearnlune.lab.namingcenter.database.service.NamingService;
 
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.List;
 
 import static yearnlune.lab.namingcenter.constant.AccountConstant.AUTOCOMPLETE;
@@ -49,7 +48,7 @@ public class NamingController {
         return new ResponseEntity<>(namingList, HttpStatus.OK);
     }
 
-    @GetMapping(AUTOCOMPLETE + "/{naming}")
+    @GetMapping("/{naming}" + AUTOCOMPLETE)
     public ResponseEntity<NamingDTO.AutoCompleteResponse> getAutocomplete(
             HttpServletResponse httpServletResponse,
             @PathVariable String naming) {
