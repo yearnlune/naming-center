@@ -1,12 +1,14 @@
 package yearnlune.lab.namingcenter.database.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import yearnlune.lab.namingcenter.database.repository.custom.NamingCustomRepository;
-import yearnlune.lab.namingcenter.database.table.Naming;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.stereotype.Repository;
+
+import yearnlune.lab.namingcenter.database.repository.custom.NamingCustomRepository;
+import yearnlune.lab.namingcenter.database.table.Naming;
 
 /**
  * Project : naming-center
@@ -17,10 +19,11 @@ import java.util.List;
  */
 
 @Repository
-public interface NamingRepository extends JpaRepository<Naming, Integer>, NamingCustomRepository {
-    boolean existsByName(String name);
+public interface NamingRepository
+	extends JpaRepository<Naming, Integer>, QuerydslPredicateExecutor<Naming>, NamingCustomRepository {
+	boolean existsByName(String name);
 
-    List<Naming> findAllByKeywordContaining(String keyword);
+	List<Naming> findAllByKeywordContaining(String keyword);
 
-    List<Naming> findAllByUpdatedAtGreaterThanEqual(Timestamp updatedAt);
+	List<Naming> findAllByUpdatedAtGreaterThanEqual(Timestamp updatedAt);
 }

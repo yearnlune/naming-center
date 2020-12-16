@@ -2,7 +2,6 @@ buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
         queryDslVersion = '4.1.3'
-        querydslPluginVersion = '1.0.10'
     }
     repositories {
         mavenCentral()
@@ -12,14 +11,12 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: "com.ewerk.gradle.plugins.querydsl"
 
 def getGitRevision = { ->
     def stdout = new ByteArrayOutputStream()
@@ -83,6 +80,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    testCompile group: 'junit', name: 'junit'
 }
 
 test {
@@ -90,27 +88,26 @@ test {
 }
 
 /* Querydsl Setting */
-
 def querydslSrcDir = 'src/main/generated'
 
-querydsl {
-    library = "com.querydsl:querydsl-apt"
-    jpa = true
-    querydslSourcesDir = querydslSrcDir
-}
+configure("querydslProjects") {
+    apply plugin: "io.spring.dependency-management"
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java', querydslSrcDir]
-        }
+    dependencies {
+        compile("com.querydsl:querydsl-core")
+        compile("com.querydsl:querydsl-jpa")
+
+        annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa")
+
+        annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+        annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     }
-}
 
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
+    clean {
+        delete file(querydslSrcDir)
+    }
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+    task cleanGeneatedDir(type: Delete) {
+        delete file(querydslSrcDir)
+    }
 }

@@ -12,13 +12,13 @@ import lombok.Getter;
 
 @Getter
 public enum AccountRoleEnum {
-    GUEST("ROLE_GUEST"),
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+	GUEST("ROLE_GUEST"),
+	USER("ROLE_USER"),
+	ADMIN("ROLE_ADMIN");
 
-    AccountRoleEnum(String value) {
-        this.value = value;
-    }
+	AccountRoleEnum(String value) {
+		this.value = value;
+	}
 
-    String value;
+	String value;
 }

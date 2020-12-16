@@ -1,6 +1,7 @@
 package yearnlune.lab.namingcenter.database.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import yearnlune.lab.namingcenter.database.table.Log;
 
 /**

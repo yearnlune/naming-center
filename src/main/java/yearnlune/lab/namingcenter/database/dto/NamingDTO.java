@@ -1,10 +1,10 @@
 package yearnlune.lab.namingcenter.database.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * Project : naming-center
@@ -16,48 +16,48 @@ import java.util.List;
 
 public class NamingDTO {
 
-    @Data
-    @NoArgsConstructor
-    public static class CommonResponse {
-        private Integer idx;
+	@Data
+	@NoArgsConstructor
+	public static class CommonResponse {
+		private Integer idx;
 
-        private String name;
+		private String name;
 
-        private String description;
+		private String description;
 
-        @Builder
-        public CommonResponse(Integer idx, String name, String description) {
-            this.idx = idx;
-            this.name = name;
-            this.description = description;
-        }
-    }
+		@Builder
+		public CommonResponse(Integer idx, String name, String description) {
+			this.idx = idx;
+			this.name = name;
+			this.description = description;
+		}
+	}
 
-    @Data
-    @NoArgsConstructor
-    public static class RegisterRequest {
-        private String name;
+	@Data
+	@NoArgsConstructor
+	public static class RegisterRequest {
+		private String name;
 
-        private String description;
+		private String description;
 
-        private AccountDTO.CommonResponse account;
+		private AccountDTO.CommonResponse account;
 
-        @Builder
-        public RegisterRequest(String name, String description, AccountDTO.CommonResponse account) {
-            this.name = name;
-            this.description = description;
-            this.account = account;
-        }
-    }
+		@Builder
+		public RegisterRequest(String name, String description, AccountDTO.CommonResponse account) {
+			this.name = name;
+			this.description = description;
+			this.account = account;
+		}
+	}
 
-    @Data
-    @NoArgsConstructor
-    public static class AutoCompleteResponse {
-        private List<String> namingList;
+	@Data
+	@NoArgsConstructor
+	public static class AutoCompleteResponse {
+		private List<String> namingList;
 
-        @Builder
-        public AutoCompleteResponse(List<String> namingList) {
-            this.namingList = namingList;
-        }
-    }
+		@Builder
+		public AutoCompleteResponse(List<String> namingList) {
+			this.namingList = namingList;
+		}
+	}
 }

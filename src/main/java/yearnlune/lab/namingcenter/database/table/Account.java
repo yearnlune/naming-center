@@ -1,56 +1,56 @@
+
 package yearnlune.lab.namingcenter.database.table;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "ot_acnt")
 @Check(constraints = "role IN ('ROLE_GUEST', 'ROLE_USER', 'ROLE_ADMIN')")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idx;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer idx;
 
-    @Column(length = 64, nullable = false, unique = true)
-    private String id;
+	@Column(length = 64, nullable = false, unique = true)
+	private String id;
 
-    @Column(length = 128, nullable = false)
-    private String name;
+	@Column(length = 128, nullable = false)
+	private String name;
 
-    @Column(length = 128, nullable = false)
-    private String password;
+	@Column(length = 128, nullable = false)
+	private String password;
 
-    @Column(columnDefinition = "varchar(64) DEFAULT 'ROLE_GUEST'", nullable = false)
-    private String role = "ROLE_GUEST";
+	@Column(columnDefinition = "varchar(64) DEFAULT 'ROLE_GUEST'", nullable = false)
+	private String role = "ROLE_GUEST";
 
-    @Column(nullable = false)
-    @CreationTimestamp
-    private Timestamp createdAt;
+	@Column(nullable = false)
+	@CreationTimestamp
+	private Timestamp createdAt;
 
-    @Builder
-    public Account(String id, String name, String password, String role, Timestamp createdAt) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-        this.createdAt = createdAt;
-    }
-
-    public Account passwordEncode(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(password);
-        return this;
-    }
+	public Account passwordEncode(PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(password);
+		return this;
+	}
 }

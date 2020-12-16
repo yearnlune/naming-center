@@ -1,6 +1,11 @@
 spring:
   application.name: naming-center
 
+#Encoding UTF-8
+  http:
+    encoding:
+      force: true
+
 # HEALTH_CHECK
 management:
   endpoints:

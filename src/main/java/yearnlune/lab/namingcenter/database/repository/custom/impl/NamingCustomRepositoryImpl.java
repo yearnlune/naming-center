@@ -1,11 +1,12 @@
 package yearnlune.lab.namingcenter.database.repository.custom.impl;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+
 import yearnlune.lab.namingcenter.database.repository.custom.NamingCustomRepository;
 import yearnlune.lab.namingcenter.database.table.Naming;
 import yearnlune.lab.namingcenter.database.table.QNaming;
-
-import java.util.List;
 
 /**
  * Project : naming-center
@@ -17,15 +18,15 @@ import java.util.List;
 
 public class NamingCustomRepositoryImpl extends QuerydslRepositorySupport implements NamingCustomRepository {
 
-    public NamingCustomRepositoryImpl() {
-        super(Naming.class);
-    }
+	public NamingCustomRepositoryImpl() {
+		super(Naming.class);
+	}
 
-    @Override
-    public List<String> findNames() {
-        QNaming naming = QNaming.naming;
-        return from(naming)
-                .select(naming.name)
-                .fetch();
-    }
+	@Override
+	public List<String> findNames() {
+		QNaming naming = QNaming.naming;
+		return from(naming)
+			.select(naming.name)
+			.fetch();
+	}
 }

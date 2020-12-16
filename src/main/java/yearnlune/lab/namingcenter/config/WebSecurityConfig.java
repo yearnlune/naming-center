@@ -14,8 +14,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import yearnlune.lab.namingcenter.constant.AccountRoleEnum;
-import yearnlune.lab.namingcenter.database.service.LogService;
+import yearnlune.lab.namingcenter.service.LogService;
 
 /**
  * Project : naming-center
@@ -28,51 +29,51 @@ import yearnlune.lab.namingcenter.database.service.LogService;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Value("${spring.profiles:}")
-    String profile;
+	@Value("${spring.profiles:}")
+	String profile;
 
-    @Autowired
-    LogService logService;
+	@Autowired
+	LogService logService;
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        if (profile.contains("develop")) {
-            http
-                    .csrf().disable()
-                    .cors();
-        } else {
-            http.csrf();
-        }
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+		if (profile.contains("develop")) {
+			http
+				.csrf().disable()
+				.cors();
+		} else {
+			http.csrf();
+		}
 
-        http
-                .formLogin().disable()
-                .addFilterAfter(new AuthenticationFilter(logService), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/error").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/validate").permitAll()
-                .antMatchers("/accounts").permitAll()
-                .antMatchers("/admin").access(AccountRoleEnum.valueOf("ADMIN").getValue())
-                .anyRequest().authenticated();
-    }
+		http
+			.formLogin().disable()
+			.addFilterAfter(new AuthenticationFilter(logService), UsernamePasswordAuthenticationFilter.class)
+			.authorizeRequests()
+			.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+			.antMatchers("/error").permitAll()
+			.antMatchers("/login").permitAll()
+			.antMatchers("/validate").permitAll()
+			.antMatchers("/accounts").permitAll()
+			.antMatchers("/admin").access(AccountRoleEnum.valueOf("ADMIN").getValue())
+			.anyRequest().authenticated();
+	}
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOrigin("*");
+		configuration.addAllowedMethod("*");
+		configuration.addAllowedHeader("*");
+		configuration.setAllowCredentials(true);
+		configuration.setMaxAge(3600L);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new Pbkdf2PasswordEncoder("secretNaming", 10000, 128);
-    }
+	@Bean
+	public static PasswordEncoder passwordEncoder() {
+		return new Pbkdf2PasswordEncoder("secretNaming", 10000, 128);
+	}
 
 }
