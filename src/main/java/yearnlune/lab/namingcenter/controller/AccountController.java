@@ -2,11 +2,12 @@ package yearnlune.lab.namingcenter.controller;
 
 import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,15 +36,13 @@ public class AccountController {
 
 	@PostMapping(ACCOUNT)
 	public ResponseEntity<AccountDTO.CommonResponse> registerAccount(
-		HttpServletResponse httpServletResponse,
-		@RequestBody AccountDTO.RegisterRequest registerRequest) {
+		@RequestBody @Valid AccountDTO.RegisterRequest registerRequest) {
 		AccountDTO.CommonResponse account = accountService.saveAccountIfNotExist(registerRequest);
-		return new ResponseEntity<>(account, HttpStatus.OK);
+		return new ResponseEntity<>(account, HttpStatus.CREATED);
 	}
 
 	@PostMapping(LOGIN)
 	public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
-		HttpServletResponse httpServletResponse,
 		@RequestBody AccountDTO.LoginRequest loginRequest) {
 		Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
 

@@ -1,5 +1,7 @@
 package yearnlune.lab.namingcenter.database.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,10 +35,13 @@ public class AccountDTO {
 	@Data
 	@NoArgsConstructor
 	public static class RegisterRequest {
+		@NotEmpty
 		private String id;
 
+		@NotEmpty
 		private String name;
 
+		@NotEmpty
 		private String password;
 
 		@Builder
