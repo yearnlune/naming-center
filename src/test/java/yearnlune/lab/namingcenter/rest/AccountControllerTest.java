@@ -32,7 +32,8 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 	private ObjectMapper objectMapper;
 
 	@Test
-	public void register_account_success() throws Exception {
+	public void registerAccount_correctAccount_shouldBeCreated() throws Exception {
+		/* GIVEN */
 		String content = objectMapper.writeValueAsString(
 			AccountDTO.RegisterRequest.builder()
 				.id("object")
@@ -40,6 +41,7 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 				.password("object")
 				.build());
 
+		/* WHEN */
 		mockMvc.perform(
 			post(ACCOUNT)
 				.content(content)
@@ -48,13 +50,41 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 				.accept(MediaType.APPLICATION_JSON)
 				.with(csrf())
 		)
+
+		/* THEN */
 			.andDo(print())
 			.andExpect(content().encoding("UTF-8"))
-			.andExpect(status().isOk());
+			.andExpect(status().isCreated());
 	}
 
 	@Test
-	public void login_success() throws Exception {
+	public void registerAccount_emptyPassword_shouldBeBadRequest() throws Exception {
+		/* GIVEN */
+		String content = objectMapper.writeValueAsString(
+			AccountDTO.RegisterRequest.builder()
+				.id("")
+				.name("오브젝트")
+				.password("")
+				.build());
+
+		/* WHEN */
+		mockMvc.perform(
+			post(ACCOUNT)
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.with(csrf())
+		)
+
+		/* THEN */
+			.andDo(print())
+			.andExpect(content().encoding("UTF-8"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void loginAccount_correctAccount_shouldBeOk() throws Exception {
 		String content = objectMapper.writeValueAsString(
 			AccountDTO.LoginRequest.builder()
 				.id("object")
@@ -74,7 +104,7 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 	}
 
 	@Test
-	public void check_expired_token() throws Exception {
+	public void validateToken_expiredToken_shouldBeUnauthorized() throws Exception {
 		String token =
 			"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJ"
 				+ "uYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNU"
