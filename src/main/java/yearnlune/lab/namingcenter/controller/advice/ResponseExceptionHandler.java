@@ -1,5 +1,7 @@
 package yearnlune.lab.namingcenter.controller.advice;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,9 +24,11 @@ import yearnlune.lab.namingcenter.exception.ExceptionResponse;
 public class ResponseExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	protected ResponseEntity<ExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-		log.warn("HttpStatus.BAD_REQUEST" + ex.getBindingResult());
-		return new ResponseEntity<>(new ExceptionResponse(HttpStatus.BAD_REQUEST, ex.getBindingResult()), HttpStatus.BAD_REQUEST);
+	protected ResponseEntity<ExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+		HttpServletRequest request) {
+		return new ResponseEntity<>(
+			new ExceptionResponse(HttpStatus.BAD_REQUEST, exception.getBindingResult(), request.getRequestURI()),
+			HttpStatus.BAD_REQUEST);
 	}
 
 }

@@ -32,12 +32,12 @@ public class ExceptionResponse {
 
 	private String path;
 
-	public ExceptionResponse(HttpStatus httpStatus, BindingResult bindingResult) {
+	public ExceptionResponse(HttpStatus httpStatus, BindingResult bindingResult, String path) {
 		this.timestamp = new Timestamp(System.currentTimeMillis());
 		this.status = httpStatus.value();
 		this.error = httpStatus.name();
 		this.message = createErrorMessage(bindingResult);
-		this.path = bindingResult.getNestedPath();
+		this.path = path;
 	}
 
 	private static String createErrorMessage(BindingResult bindingResult) {
