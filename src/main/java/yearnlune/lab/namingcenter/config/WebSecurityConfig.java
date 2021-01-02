@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/error").permitAll()
 			.antMatchers("/login").permitAll()
 			.antMatchers("/validate").permitAll()
-			.antMatchers("/accounts").permitAll()
+			.antMatchers("/account").permitAll()
 			.antMatchers("/admin").access(AccountRoleEnum.valueOf("ADMIN").getValue())
 			.anyRequest().authenticated();
 	}

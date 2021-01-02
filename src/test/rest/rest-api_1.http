@@ -1,26 +1,27 @@
-POST http://localhost:8888/accounts
+POST http://192.168.1.224:8123/accounts
 Content-Type: application/json
 
 {
-  "id": "TEST",
-  "name": "TEST_NAME",
-  "password": "password"
+  "id": "",
+  "name": "Admin",
+  "password": ""
 }
 
 <> 2020-03-06T110759.200.json
 
 ###
-POST http://localhost:8888/login
+POST http://127.0.0.1:8123/login
 Content-Type: application/json
 
 {
-  "id": "TEST",
-  "password": "password"
+  "id": "admin",
+  "password": "admin"
 }
 
 ###
-POST http://localhost:8888/naming
+POST http://localhost:8123/naming
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiYWRtaW4iLCJpYXQiOjE2MDM0MzQ2MzYsImV4cCI6MTYwMzQzNTIzNn0.0l447JjHgTVFwLflZ9OeWvdUkXc-Ejjh5TwMXCkkGUTV1DllLQy-yBzL3gkAftztjRjbP-RPCI5U5U_ISt4xSw
 
 {
   "name": "TEST",
@@ -36,7 +37,6 @@ Content-Type: application/json
 
 GET http://localhost:8888/naming/pass
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiVEVTVCIsImlhdCI6MTU4NTYyMjE3NiwiZXhwIjoxNTg1NjIyNzc2fQ.C5i6D6DH9ID3q1fsTxUfeet58y5Hqqihq6jUzBHNl5s5QwsFM4htvJdX4Z9snqnd-90sP5mEPzWCoJOoX8ETdQ
-Set-Cookie: jwt=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiVEVTVCIsImlhdCI6MTU4NTYyMjE3NiwiZXhwIjoxNTg1NjIyNzc2fQ.C5i6D6DH9ID3q1fsTxUfeet58y5Hqqihq6jUzBHNl5s5QwsFM4htvJdX4Z9snqnd-90sP5mEPzWCoJOoX8ETdQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJuYW1pbmdDZW50ZXIiLCJhdXRob3JpdGllcyI6WyJST0xFX0dVRVNUIl0sImlkIjoiYWRtaW4iLCJpYXQiOjE2MDM0MzQ2MzYsImV4cCI6MTYwMzQzNTIzNn0.0l447JjHgTVFwLflZ9OeWvdUkXc-Ejjh5TwMXCkkGUTV1DllLQy-yBzL3gkAftztjRjbP-RPCI5U5U_ISt4xSw
 
 ###
