@@ -4,6 +4,7 @@ import static yearnlune.lab.namingcenter.config.AuthenticationFilter.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.util.Pair;
@@ -22,6 +23,7 @@ import yearnlune.lab.convertobject.ConvertObject;
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.repository.AccountRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
+import yearnlune.lab.namingcenter.exception.BadRequestException;
 
 @Slf4j
 @Service
@@ -47,6 +49,11 @@ public class AccountService {
 		return null;
 	}
 
+	public List<AccountDTO.CommonResponse> findAllAccounts() {
+		List<Account> accountList = accountRepository.findAll();
+		return convertToCommonResponse(accountList);
+	}
+
 	public Pair<AccountDTO.CommonResponse, HttpStatus> loginAccount(AccountDTO.LoginRequest loginRequest) {
 		if (redisService.isLoginLock(loginRequest.getId())) {
 			return Pair.of(AccountDTO.CommonResponse.builder().build(), HttpStatus.TOO_MANY_REQUESTS);
@@ -61,6 +68,26 @@ public class AccountService {
 			redisService.initializeLoginFailCount(loginRequest.getId());
 			return Pair.of(convertToCommonResponse(account), HttpStatus.OK);
 		}
+	}
+
+	public AccountDTO.CommonResponse updateAccount(Integer accountIdx, AccountDTO.PatchedRequest patchedRequest) throws
+		BadRequestException {
+		Optional<Account> accountOptional = accountRepository.findById(accountIdx);
+
+		if (!accountOptional.isPresent()) {
+			throw new BadRequestException();
+		}
+
+		accountOptional.ifPresent(account -> {
+			if (patchedRequest.getName() != null) {
+				account.setName(patchedRequest.getName());
+			}
+			if (patchedRequest.getPassword() != null) {
+				account.setPassword(passwordEncoder.encode(patchedRequest.getPassword()));
+			}
+		});
+
+		return convertToCommonResponse(accountOptional.get());
 	}
 
 	public String createAuthorizationToken(AccountDTO.CommonResponse account) {
@@ -102,6 +129,12 @@ public class AccountService {
 
 	private AccountDTO.CommonResponse convertToCommonResponse(Account account) {
 		return ConvertObject.object2Object(account, AccountDTO.CommonResponse.class);
+	}
+
+	private List<AccountDTO.CommonResponse> convertToCommonResponse(List<Account> accounts) {
+		return accounts.stream()
+			.map(account -> ConvertObject.object2Object(account, AccountDTO.CommonResponse.class))
+			.collect(Collectors.toList());
 	}
 
 	private boolean isCorrectPassword(String loginPassword, String accountPassword) {

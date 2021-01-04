@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
+import yearnlune.lab.namingcenter.exception.BadRequestException;
 import yearnlune.lab.namingcenter.exception.ExceptionResponse;
 
 /**
@@ -31,4 +32,11 @@ public class ResponseExceptionHandler {
 			HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(BadRequestException.class)
+	protected ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException exception,
+		HttpServletRequest request) {
+		return new ResponseEntity<>(
+			new ExceptionResponse(HttpStatus.BAD_REQUEST, exception.getReason(), request.getRequestURI()),
+			HttpStatus.BAD_REQUEST);
+	}
 }

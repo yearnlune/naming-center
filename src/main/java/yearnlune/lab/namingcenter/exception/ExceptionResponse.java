@@ -40,6 +40,14 @@ public class ExceptionResponse {
 		this.path = path;
 	}
 
+	public ExceptionResponse(HttpStatus httpStatus, String reason, String path) {
+		this.timestamp = new Timestamp(System.currentTimeMillis());
+		this.status = httpStatus.value();
+		this.error = httpStatus.name();
+		this.message = reason;
+		this.path = path;
+	}
+
 	private static String createErrorMessage(BindingResult bindingResult) {
 		StringBuilder stringBuilder = new StringBuilder();
 		boolean isFirst = true;

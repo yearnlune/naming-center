@@ -2,12 +2,16 @@ package yearnlune.lab.namingcenter.controller;
 
 import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +45,12 @@ public class AccountController {
 		return new ResponseEntity<>(account, HttpStatus.CREATED);
 	}
 
+	@GetMapping(ACCOUNTS)
+	public ResponseEntity<List<AccountDTO.CommonResponse>> findAllAccounts() {
+		List<AccountDTO.CommonResponse> accounts = accountService.findAllAccounts();
+		return new ResponseEntity<>(accounts, HttpStatus.OK);
+	}
+
 	@PostMapping(LOGIN)
 	public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
 		@RequestBody AccountDTO.LoginRequest loginRequest) {
@@ -51,6 +61,14 @@ public class AccountController {
 		}
 
 		return new ResponseEntity<>(account.getFirst(), account.getSecond());
+	}
+
+	@PatchMapping(ACCOUNT + "/{idx}")
+	public ResponseEntity<AccountDTO.CommonResponse> updateAccount(
+		@PathVariable Integer idx,
+		@RequestBody AccountDTO.PatchedRequest patchedRequest) {
+		AccountDTO.CommonResponse commonResponse = accountService.updateAccount(idx, patchedRequest);
+		return new ResponseEntity<>(commonResponse, HttpStatus.OK);
 	}
 
 	@PostMapping(VALIDATE)
