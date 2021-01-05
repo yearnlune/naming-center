@@ -39,7 +39,7 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 	private String jwtToken;
 
 	@Before
-	public void init() {
+	public void setUp() {
 		jwtToken = accountService.createAuthorizationToken(
 			AccountDTO.CommonResponse.builder()
 				.idx(1)
@@ -98,6 +98,27 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 			.andDo(print())
 			.andExpect(content().encoding("UTF-8"))
 			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void findAllAccounts_hasAuthorization_shouldBeOk() throws Exception {
+		mockMvc.perform(
+			get(ACCOUNTS)
+				.header("Authorization", jwtToken)
+		)
+			.andDo(print())
+			.andExpect(header().exists("X-XSS-Protection"))
+			.andExpect(header().stringValues("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate"))
+			.andExpect(status().isOk());
+	}
+
+	@Test
+	public void findAllAccounts_hasUnAuthorization_shouldBeForbidden() throws Exception {
+		mockMvc.perform(
+			get(ACCOUNTS)
+		)
+			.andDo(print())
+			.andExpect(status().isForbidden());
 	}
 
 	@Test
@@ -215,7 +236,7 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 				.accept(MediaType.APPLICATION_JSON)
 				.with(csrf())
 		)
-			.andDo(print())
+			.andDo(log())
 			.andExpect(status().isUnauthorized());
 	}
 }
