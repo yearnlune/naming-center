@@ -197,6 +197,25 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 	}
 
 	@Test
+	public void validateToken_correctToken_shouldBeOk() throws Exception {
+		String content = objectMapper.writeValueAsString(
+			AccountDTO.TokenValidationRequest.builder()
+				.jwt(jwtToken)
+				.build());
+
+		mockMvc.perform(
+			post(VALIDATE)
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.with(csrf())
+		)
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+
+	@Test
 	public void validateToken_expiredToken_shouldBeUnauthorized() throws Exception {
 		String token =
 			"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1pbmdDZW50ZXJKV1QiLCJpc3MiOiJ"
