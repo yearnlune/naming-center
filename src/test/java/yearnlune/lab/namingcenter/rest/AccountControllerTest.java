@@ -160,6 +160,26 @@ public class AccountControllerTest extends RestfulApiTestSupport {
 	}
 
 	@Test
+	public void loginAccount_incorrectAccount_shouldBeUnauthorized() throws Exception {
+		String content = objectMapper.writeValueAsString(
+			AccountDTO.LoginRequest.builder()
+				.id("mock")
+				.password("mockk")
+				.build());
+
+		mockMvc.perform(
+			post(LOGIN)
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.with(csrf())
+		)
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	public void updateAccount_name_shouldBeOk() throws Exception {
 		String patchedContent = objectMapper.writeValueAsString(
 			AccountDTO.PatchedRequest.builder()
