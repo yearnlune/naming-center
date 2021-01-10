@@ -66,8 +66,10 @@ public class AccountDTO {
 	@Data
 	@NoArgsConstructor
 	public static class LoginRequest {
+		@NotEmpty
 		private String id;
 
+		@NotEmpty
 		private String password;
 
 		@Builder

@@ -24,6 +24,7 @@ import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.repository.AccountRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.exception.BadRequestException;
+import yearnlune.lab.namingcenter.exception.TooManyRequestException;
 
 @Slf4j
 @Service
@@ -56,7 +57,7 @@ public class AccountService {
 
 	public Pair<AccountDTO.CommonResponse, HttpStatus> loginAccount(AccountDTO.LoginRequest loginRequest) {
 		if (redisService.isLoginLock(loginRequest.getId())) {
-			return Pair.of(AccountDTO.CommonResponse.builder().build(), HttpStatus.TOO_MANY_REQUESTS);
+			throw new TooManyRequestException("로그인에 5회 실패하였습니다. 잠시 후 다시 시도해주세요.");
 		}
 
 		Account account = accountRepository.findById(loginRequest.getId()).orElse(null);

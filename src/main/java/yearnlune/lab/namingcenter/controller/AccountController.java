@@ -53,7 +53,7 @@ public class AccountController {
 
 	@PostMapping(LOGIN)
 	public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
-		@RequestBody AccountDTO.LoginRequest loginRequest) {
+		@RequestBody @Valid AccountDTO.LoginRequest loginRequest) {
 		Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
 
 		if (account.getSecond().equals(HttpStatus.OK)) {
