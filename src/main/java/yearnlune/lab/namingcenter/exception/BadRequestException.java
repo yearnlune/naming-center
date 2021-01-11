@@ -1,6 +1,7 @@
 package yearnlune.lab.namingcenter.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -11,8 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
  * DESCRIPTION :
  */
 public class BadRequestException extends ResponseStatusException {
-
-	public BadRequestException() {
-		super(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+	public BadRequestException(@Nullable String reason) {
+		super(HttpStatus.BAD_REQUEST, reason == null ? "잘못된 요청입니다." : reason);
 	}
 }

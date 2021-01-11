@@ -76,7 +76,7 @@ public class AccountService {
 		Optional<Account> accountOptional = accountRepository.findById(accountIdx);
 
 		if (!accountOptional.isPresent()) {
-			throw new BadRequestException();
+			throw new BadRequestException("해당 계정이 존재하지 않습니다. : " + accountIdx.toString());
 		}
 
 		accountOptional.ifPresent(account -> {
