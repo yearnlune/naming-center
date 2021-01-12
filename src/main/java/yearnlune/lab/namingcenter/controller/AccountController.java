@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,13 +53,12 @@ public class AccountController {
 	@PostMapping(LOGIN)
 	public ResponseEntity<AccountDTO.CommonResponse> loginAccount(
 		@RequestBody @Valid AccountDTO.LoginRequest loginRequest) {
-		Pair<AccountDTO.CommonResponse, HttpStatus> account = accountService.loginAccount(loginRequest);
+		AccountDTO.CommonResponse account = accountService.loginAccount(loginRequest);
 
-		if (account.getSecond().equals(HttpStatus.OK)) {
-			account.getFirst().setJwt(accountService.createAuthorizationToken(account.getFirst()));
-		}
+		String jwt = accountService.createAuthorizationToken(account);
+		account.setJwt(jwt);
 
-		return new ResponseEntity<>(account.getFirst(), account.getSecond());
+		return new ResponseEntity<>(account, HttpStatus.OK);
 	}
 
 	@PatchMapping(ACCOUNT + "/{idx}")

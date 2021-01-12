@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import yearnlune.lab.namingcenter.exception.BadRequestException;
 import yearnlune.lab.namingcenter.exception.ExceptionResponse;
+import yearnlune.lab.namingcenter.exception.TooManyRequestException;
+import yearnlune.lab.namingcenter.exception.UnauthorizedException;
 
 /**
  * Project : naming-center
@@ -38,5 +40,21 @@ public class ResponseExceptionHandler {
 		return new ResponseEntity<>(
 			new ExceptionResponse(HttpStatus.BAD_REQUEST, exception.getReason(), request.getRequestURI()),
 			HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(TooManyRequestException.class)
+	protected ResponseEntity<ExceptionResponse> handleTooManyRequestException(TooManyRequestException exception,
+		HttpServletRequest request) {
+		return new ResponseEntity<>(
+			new ExceptionResponse(HttpStatus.TOO_MANY_REQUESTS, exception.getReason(), request.getRequestURI()),
+			HttpStatus.TOO_MANY_REQUESTS);
+	}
+
+	@ExceptionHandler(UnauthorizedException.class)
+	protected ResponseEntity<ExceptionResponse> handleUnauthorizedException(UnauthorizedException exception,
+		HttpServletRequest request) {
+		return new ResponseEntity<>(
+			new ExceptionResponse(HttpStatus.UNAUTHORIZED, exception.getReason(), request.getRequestURI()),
+			HttpStatus.UNAUTHORIZED);
 	}
 }

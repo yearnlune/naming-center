@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -25,6 +26,7 @@ import yearnlune.lab.namingcenter.database.repository.AccountRepository;
 import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.exception.BadRequestException;
 import yearnlune.lab.namingcenter.exception.TooManyRequestException;
+import yearnlune.lab.namingcenter.exception.UnauthorizedException;
 
 @Slf4j
 @Service
@@ -55,7 +57,8 @@ public class AccountService {
 		return convertToCommonResponse(accountList);
 	}
 
-	public Pair<AccountDTO.CommonResponse, HttpStatus> loginAccount(AccountDTO.LoginRequest loginRequest) {
+	public AccountDTO.CommonResponse loginAccount(AccountDTO.LoginRequest loginRequest) throws
+		ResponseStatusException {
 		if (redisService.isLoginLock(loginRequest.getId())) {
 			throw new TooManyRequestException("로그인에 5회 실패하였습니다. 잠시 후 다시 시도해주세요.");
 		}
@@ -64,10 +67,10 @@ public class AccountService {
 
 		if (account == null || !isCorrectPassword(loginRequest.getPassword(), account.getPassword())) {
 			redisService.increaseLoginFailCount(loginRequest.getId());
-			return Pair.of(AccountDTO.CommonResponse.builder().build(), HttpStatus.UNAUTHORIZED);
+			throw new UnauthorizedException("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.");
 		} else {
 			redisService.initializeLoginFailCount(loginRequest.getId());
-			return Pair.of(convertToCommonResponse(account), HttpStatus.OK);
+			return convertToCommonResponse(account);
 		}
 	}
 
