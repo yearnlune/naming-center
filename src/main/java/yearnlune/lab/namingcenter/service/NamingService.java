@@ -16,6 +16,7 @@ import yearnlune.lab.convertobject.ConvertObject;
 import yearnlune.lab.namingcenter.database.dto.NamingDTO;
 import yearnlune.lab.namingcenter.database.repository.NamingRepository;
 import yearnlune.lab.namingcenter.database.table.Naming;
+import yearnlune.lab.namingcenter.exception.BadRequestException;
 
 /**
  * Project : naming-center
@@ -44,17 +45,17 @@ public class NamingService {
 			.build();
 	}
 
-	public NamingDTO.CommonResponse saveNamingIfNotExist(NamingDTO.RegisterRequest registerRequest) {
-		Naming name = ConvertObject.object2Object(registerRequest, Naming.class);
-		if (!hasNaming(registerRequest.getName())) {
-			return convertToCommonResponse(namingRepository.save(
-				Naming.builder()
-					.name(registerRequest.getName().toLowerCase())
-					.description(registerRequest.getDescription().toLowerCase())
-					.build()
-			));
+	public NamingDTO.CommonResponse saveNamingIfNotExist(NamingDTO.RegisterRequest registerRequest) throws BadRequestException {
+		if (hasNaming(registerRequest.getName())) {
+			throw new BadRequestException("이미 존재하는 이름입니다. [" + registerRequest.getName() + "]");
 		}
-		return null;
+
+		return convertToCommonResponse(namingRepository.save(
+			Naming.builder()
+				.name(registerRequest.getName().toLowerCase())
+				.description(registerRequest.getDescription().toLowerCase())
+				.build()
+		));
 	}
 
 	public List<NamingDTO.CommonResponse> findNaming(String keyword) {

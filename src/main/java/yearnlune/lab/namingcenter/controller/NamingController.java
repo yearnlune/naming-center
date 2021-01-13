@@ -4,8 +4,6 @@ import static yearnlune.lab.namingcenter.constant.AccountConstant.*;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,15 +38,13 @@ public class NamingController {
 
 	@PostMapping
 	public ResponseEntity<NamingDTO.CommonResponse> registerNaming(
-		HttpServletResponse httpServletResponse,
 		@RequestBody NamingDTO.RegisterRequest registerRequest) {
 		NamingDTO.CommonResponse naming = namingService.saveNamingIfNotExist(registerRequest);
-		return new ResponseEntity<>(naming, HttpStatus.OK);
+		return new ResponseEntity<>(naming, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{keyword}")
 	public ResponseEntity<List<NamingDTO.CommonResponse>> searchNaming(
-		HttpServletResponse httpServletResponse,
 		@PathVariable String keyword) {
 		List<NamingDTO.CommonResponse> namingList = namingService.findNaming(keyword);
 		return new ResponseEntity<>(namingList, HttpStatus.OK);
@@ -56,7 +52,6 @@ public class NamingController {
 
 	@GetMapping("/{naming}" + AUTOCOMPLETE)
 	public ResponseEntity<NamingDTO.AutoCompleteResponse> getAutocomplete(
-		HttpServletResponse httpServletResponse,
 		@PathVariable String naming) {
 		NamingDTO.AutoCompleteResponse autoCompleteResponse = namingService.findNamingUsingRedis(naming);
 		return new ResponseEntity<>(autoCompleteResponse, HttpStatus.OK);

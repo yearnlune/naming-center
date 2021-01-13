@@ -2,6 +2,7 @@ package yearnlune.lab.namingcenter.database.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,20 +35,15 @@ public class NamingDTO {
 	}
 
 	@Data
+	@Builder
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class RegisterRequest {
 		private String name;
 
 		private String description;
 
 		private AccountDTO.CommonResponse account;
-
-		@Builder
-		public RegisterRequest(String name, String description, AccountDTO.CommonResponse account) {
-			this.name = name;
-			this.description = description;
-			this.account = account;
-		}
 	}
 
 	@Data
