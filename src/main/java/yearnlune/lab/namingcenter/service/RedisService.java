@@ -2,6 +2,7 @@ package yearnlune.lab.namingcenter.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,8 @@ public class RedisService {
 
 	private final NamingService namingService;
 
+	private final Timer timer = new Timer();
+
 	private Timestamp previousTime;
 
 	private final TimerTask autoCompleteTask = new TimerTask() {
@@ -61,6 +64,8 @@ public class RedisService {
 		for (String naming : namingList) {
 			redisTemplate.opsForValue().set(makeNameRedisKey(naming), 0);
 		}
+
+		this.timer.schedule(this.autoCompleteTask, 5000, 5000);
 	}
 
 	public void initializeLoginFailCount(String loginId) {
