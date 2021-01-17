@@ -51,6 +51,11 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 				.build()
 		);
 
+		insertMockAccount();
+		insertMockNaming();
+	}
+
+	private void insertMockAccount() throws Exception {
 		/* GIVEN */
 		String content = objectMapper.writeValueAsString(
 			AccountDTO.RegisterRequest.builder()
@@ -66,6 +71,29 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 				.contentType(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON)
+				.with(csrf())
+		);
+	}
+
+	private void insertMockNaming() throws Exception {
+		/* GIVEN */
+		String content = objectMapper.writeValueAsString(
+			NamingDTO.RegisterRequest.builder()
+				.name("mock")
+				.description("mock")
+				.account(AccountDTO.CommonResponse.builder()
+					.idx(1)
+					.build())
+				.build());
+
+		/* WHEN */
+		mockMvc.perform(
+			post(NAMING)
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", jwtToken)
 				.with(csrf())
 		);
 	}
@@ -97,5 +125,34 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 			.andDo(print())
 			.andExpect(content().encoding("UTF-8"))
 			.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void registerNaming_alreadyRegisteredNaming_shouldBeBadRequest() throws Exception {
+		/* GIVEN */
+		String content = objectMapper.writeValueAsString(
+			NamingDTO.RegisterRequest.builder()
+				.name("mock")
+				.description("mock")
+				.account(AccountDTO.CommonResponse.builder()
+					.idx(1)
+					.build())
+				.build());
+
+		/* WHEN */
+		mockMvc.perform(
+			post(NAMING)
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", jwtToken)
+				.with(csrf())
+		)
+
+			/* THEN */
+			.andDo(print())
+			.andExpect(content().encoding("UTF-8"))
+			.andExpect(status().isBadRequest());
 	}
 }
