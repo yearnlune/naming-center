@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.dto.NamingDTO;
-import yearnlune.lab.namingcenter.database.table.Account;
 import yearnlune.lab.namingcenter.service.AccountService;
 import yearnlune.lab.namingcenter.service.NamingService;
 
@@ -154,5 +153,18 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 			.andDo(print())
 			.andExpect(content().encoding("UTF-8"))
 			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void searchNaming_existNaming_shouldBeOk() throws Exception {
+		mockMvc.perform(
+			get(NAMING + "/mock")
+				.header("Authorization", jwtToken)
+				.with(csrf())
+		)
+			/* THEN */
+			.andDo(print())
+			.andExpect(content().encoding("UTF-8"))
+			.andExpect(status().isOk());
 	}
 }
