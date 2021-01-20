@@ -17,6 +17,7 @@ import yearnlune.lab.namingcenter.database.dto.NamingDTO;
 import yearnlune.lab.namingcenter.database.repository.NamingRepository;
 import yearnlune.lab.namingcenter.database.table.Naming;
 import yearnlune.lab.namingcenter.exception.BadRequestException;
+import yearnlune.lab.namingcenter.exception.NotFoundException;
 
 /**
  * Project : naming-center
@@ -58,8 +59,14 @@ public class NamingService {
 		));
 	}
 
-	public List<NamingDTO.CommonResponse> findNaming(String keyword) {
-		return convertToCommonResponse(namingRepository.findAllByKeywordContaining(keyword));
+	public List<NamingDTO.CommonResponse> findNaming(String keyword) throws NotFoundException {
+		List<Naming> namingList = namingRepository.findAllByKeywordContaining(keyword);
+
+		if (namingList.isEmpty()) {
+			throw new NotFoundException("결과가 없습니다.");
+		}
+
+		return convertToCommonResponse(namingList);
 	}
 
 	private boolean hasNaming(String name) {
