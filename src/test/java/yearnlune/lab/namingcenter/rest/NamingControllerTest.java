@@ -157,6 +157,7 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 
 	@Test
 	public void searchNaming_existNaming_shouldBeOk() throws Exception {
+		/* WHEN */
 		mockMvc.perform(
 			get(NAMING + "/mock")
 				.header("Authorization", jwtToken)
@@ -164,7 +165,19 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 		)
 			/* THEN */
 			.andDo(print())
-			.andExpect(content().encoding("UTF-8"))
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	public void searchNaming_notExistNaming_shouldBeNotFound() throws Exception {
+		/* WHEN */
+		mockMvc.perform(
+			get(NAMING + "/empty")
+				.header("Authorization", jwtToken)
+				.with(csrf())
+		)
+			/* THEN */
+			.andDo(print())
+			.andExpect(status().isNotFound());
 	}
 }
