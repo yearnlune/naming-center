@@ -22,7 +22,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "ot_acnt")
-@Check(constraints = "role IN ('ROLE_GUEST', 'ROLE_USER', 'ROLE_ADMIN')")
+@Check(constraints = "'role' IN ('ROLE_GUEST', 'ROLE_USER', 'ROLE_ADMIN')")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
