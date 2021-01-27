@@ -24,7 +24,6 @@ import yearnlune.lab.namingcenter.type.AccountRoleType;
 
 @Entity
 @Table(name = "ot_acnt")
-// @Check(constraints = "'role' IN ('ROLE_GUEST', 'ROLE_USER', 'ROLE_ADMIN')")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -55,17 +54,5 @@ public class Account {
 	public Account passwordEncode(PasswordEncoder passwordEncoder) {
 		this.password = passwordEncoder.encode(password);
 		return this;
-	}
-
-	@Override
-	public String toString() {
-		return "Account{" +
-			"idx=" + idx +
-			", id='" + id + '\'' +
-			", name='" + name + '\'' +
-			", password='" + password + '\'' +
-			", role=" + role.getValue() +
-			", createdAt=" + createdAt +
-			'}';
 	}
 }
