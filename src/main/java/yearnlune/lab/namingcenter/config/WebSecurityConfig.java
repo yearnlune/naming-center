@@ -15,8 +15,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import yearnlune.lab.namingcenter.constant.AccountRoleEnum;
 import yearnlune.lab.namingcenter.service.LogService;
+import yearnlune.lab.namingcenter.type.AccountRoleType;
 
 /**
  * Project : naming-center
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/login").permitAll()
 			.antMatchers("/validate").permitAll()
 			.antMatchers("/account").permitAll()
-			.antMatchers("/admin").access(AccountRoleEnum.valueOf("ADMIN").getValue())
+			.antMatchers("/admin").access(AccountRoleType.ADMIN.getValue())
 			.anyRequest().authenticated();
 	}
 
