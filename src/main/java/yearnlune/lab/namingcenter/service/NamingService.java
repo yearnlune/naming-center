@@ -40,12 +40,6 @@ public class NamingService {
 		this.redisTemplate = redisTemplate;
 	}
 
-	public NamingDTO.AutoCompleteResponse findNamingUsingRedis(String naming) {
-		return NamingDTO.AutoCompleteResponse.builder()
-			.namingList(getNamingListUsingRedis(naming.toLowerCase()))
-			.build();
-	}
-
 	public NamingDTO.CommonResponse saveNamingIfNotExist(NamingDTO.RegisterRequest registerRequest) throws BadRequestException {
 		if (hasNaming(registerRequest.getName())) {
 			throw new BadRequestException("이미 존재하는 이름입니다. [" + registerRequest.getName() + "]");
@@ -59,6 +53,10 @@ public class NamingService {
 		));
 	}
 
+	private boolean hasNaming(String name) {
+		return namingRepository.existsByName(name);
+	}
+
 	public List<NamingDTO.CommonResponse> findNaming(String keyword) throws NotFoundException {
 		List<Naming> namingList = namingRepository.findAllByKeywordContaining(keyword);
 
@@ -69,8 +67,37 @@ public class NamingService {
 		return convertToCommonResponse(namingList);
 	}
 
-	private boolean hasNaming(String name) {
-		return namingRepository.existsByName(name);
+	public NamingDTO.CommonResponse updateNaming(Integer idx, NamingDTO.CommonResponse patchRequest) {
+		Naming naming = namingRepository.findNamingByIdx(idx);
+
+		naming.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+		naming.setName(patchRequest.getName());
+		naming.setDescription(patchRequest.getDescription());
+
+		String keyword = (patchRequest.getName() + "|" + patchRequest.getDescription()).toLowerCase();
+		naming.setKeyword(keyword);
+
+		return convertToCommonResponse(naming);
+	}
+
+	public NamingDTO.AutoCompleteResponse findNamingUsingRedis(String naming) {
+		return NamingDTO.AutoCompleteResponse.builder()
+			.namingList(getNamingListUsingRedis(naming.toLowerCase()))
+			.build();
+	}
+
+	private List<String> getNamingListUsingRedis(String naming) {
+		Set<String> namingSet = redisTemplate.keys(makeNameRedisKey(naming) + "*");
+		List<String> namingList = new ArrayList<>();
+		if (namingSet == null) {
+			namingSet = new HashSet<>();
+		}
+
+		for (String key : namingSet) {
+			namingList.add(key.split(":")[1]);
+		}
+
+		return namingList;
 	}
 
 	private NamingDTO.CommonResponse convertToCommonResponse(Naming naming) {
@@ -97,17 +124,5 @@ public class NamingService {
 		return namingRepository.findNames();
 	}
 
-	private List<String> getNamingListUsingRedis(String naming) {
-		Set<String> namingSet = redisTemplate.keys(makeNameRedisKey(naming) + "*");
-		List<String> namingList = new ArrayList<>();
-		if (namingSet == null) {
-			namingSet = new HashSet<>();
-		}
 
-		for (String key : namingSet) {
-			namingList.add(key.split(":")[1]);
-		}
-
-		return namingList;
-	}
 }

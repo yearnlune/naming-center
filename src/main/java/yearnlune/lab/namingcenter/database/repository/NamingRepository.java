@@ -23,6 +23,8 @@ public interface NamingRepository
 	extends JpaRepository<Naming, Integer>, QuerydslPredicateExecutor<Naming>, NamingCustomRepository {
 	boolean existsByName(String name);
 
+	Naming findNamingByIdx(Integer idx);
+
 	List<Naming> findAllByKeywordContaining(String keyword);
 
 	List<Naming> findAllByUpdatedAtGreaterThanEqual(Timestamp updatedAt);
