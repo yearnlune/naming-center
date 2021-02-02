@@ -45,7 +45,7 @@ public class Account {
 
 	@Enumerated(EnumType.STRING)
 	@Column(columnDefinition = "varchar(64) DEFAULT 'ROLE_GUEST'", nullable = false)
-	private AccountRoleType role;
+	private AccountRoleType role = AccountRoleType.GUEST;
 
 	@Column(nullable = false)
 	@CreationTimestamp

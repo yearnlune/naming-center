@@ -6,7 +6,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -67,8 +70,13 @@ public class NamingService {
 		return convertToCommonResponse(namingList);
 	}
 
+	@Transactional
 	public NamingDTO.CommonResponse updateNaming(Integer idx, NamingDTO.CommonResponse patchRequest) {
-		Naming naming = namingRepository.findNamingByIdx(idx);
+		Naming naming = namingRepository.findNamingByIdx(idx).orElse(null);
+
+		if (naming == null) {
+			throw new NotFoundException("해당 Naming이 존재하지 않습니다.");
+		}
 
 		naming.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 		naming.setName(patchRequest.getName());
@@ -100,11 +108,11 @@ public class NamingService {
 		return namingList;
 	}
 
-	private NamingDTO.CommonResponse convertToCommonResponse(Naming naming) {
+	public NamingDTO.CommonResponse convertToCommonResponse(Naming naming) {
 		return ConvertObject.object2Object(naming, NamingDTO.CommonResponse.class);
 	}
 
-	private List<NamingDTO.CommonResponse> convertToCommonResponse(List<Naming> namingList) {
+	public List<NamingDTO.CommonResponse> convertToCommonResponse(List<Naming> namingList) {
 		List<NamingDTO.CommonResponse> refinedNamingList = new ArrayList<>();
 		for (Naming naming : namingList) {
 			refinedNamingList.add(convertToCommonResponse(naming));

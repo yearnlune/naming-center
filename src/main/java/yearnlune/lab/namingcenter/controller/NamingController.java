@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,14 @@ public class NamingController {
 		@PathVariable String keyword) {
 		List<NamingDTO.CommonResponse> namingList = namingService.findNaming(keyword);
 		return new ResponseEntity<>(namingList, HttpStatus.OK);
+	}
+
+	@PatchMapping("/{idx}")
+	public ResponseEntity<NamingDTO.CommonResponse> updateNaming(
+		@PathVariable Integer idx,
+		@RequestBody NamingDTO.CommonResponse patchRequest) {
+		NamingDTO.CommonResponse naming =  namingService.updateNaming(idx, patchRequest);
+		return new ResponseEntity<>(naming, HttpStatus.OK);
 	}
 
 	@GetMapping("/{naming}" + AUTOCOMPLETE)

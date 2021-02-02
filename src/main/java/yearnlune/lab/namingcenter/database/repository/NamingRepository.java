@@ -2,6 +2,7 @@ package yearnlune.lab.namingcenter.database.repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -23,7 +24,7 @@ public interface NamingRepository
 	extends JpaRepository<Naming, Integer>, QuerydslPredicateExecutor<Naming>, NamingCustomRepository {
 	boolean existsByName(String name);
 
-	Naming findNamingByIdx(Integer idx);
+	Optional<Naming> findNamingByIdx(Integer idx);
 
 	List<Naming> findAllByKeywordContaining(String keyword);
 
