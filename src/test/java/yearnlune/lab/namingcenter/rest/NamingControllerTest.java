@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import yearnlune.lab.namingcenter.database.dto.AccountDTO;
 import yearnlune.lab.namingcenter.database.dto.NamingDTO;
+import yearnlune.lab.namingcenter.database.repository.NamingRepository;
+import yearnlune.lab.namingcenter.database.table.Naming;
 import yearnlune.lab.namingcenter.service.AccountService;
 import yearnlune.lab.namingcenter.service.NamingService;
 
@@ -38,6 +40,9 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 
 	@Autowired
 	private NamingService namingService;
+
+	@Autowired
+	private NamingRepository namingRepository;
 
 	private String jwtToken;
 
@@ -180,4 +185,34 @@ public class NamingControllerTest extends RestfulApiTestSupport {
 			.andDo(print())
 			.andExpect(status().isNotFound());
 	}
+
+	@Test
+	public void updateNaming_existNamingIdx_shouldBeOk() throws Exception {
+		String content = objectMapper.writeValueAsString(
+			NamingDTO.CommonResponse.builder()
+				.name("mockn")
+				.description("mockd")
+				.build());
+
+		/* WHEN */
+		mockMvc.perform(
+			patch(NAMING + "/1")
+				.content(content)
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8")
+				.header("Authorization", jwtToken)
+				.with(csrf())
+		)
+			/* THEN */
+			.andDo(print())
+			.andExpect(
+				content().json(convertNamingIntoJsonOfCommomResponse(namingRepository.findNamingByIdx(1).orElse(null))))
+			.andExpect(status().isOk());
+	}
+
+	private String convertNamingIntoJsonOfCommomResponse(Naming naming) throws Exception {
+		return objectMapper.writeValueAsString(
+			namingService.convertToCommonResponse(naming));
+	}
+
 }
