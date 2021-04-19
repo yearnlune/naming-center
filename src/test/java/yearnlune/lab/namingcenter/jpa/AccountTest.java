@@ -5,6 +5,10 @@ import static org.junit.Assert.*;
 
 import java.util.Optional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,16 +31,15 @@ public class AccountTest extends JpaTestSupport {
 
 	@Override
 	public void setUp() {
+		super.setUp();
 		Account accountMock = Account.builder()
 			.id("mock")
 			.name("nameMock")
 			.password("mock")
-			.role(AccountRoleType.GUEST)
+			.role(AccountRoleType.ROLE_GUEST)
 			.build();
 
 		accountRepository.save(accountMock);
-
-		super.setUp();
 	}
 
 	@Test
