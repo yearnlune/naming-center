@@ -94,7 +94,7 @@ public class AccountService {
 
 	public String createAuthorizationToken(AccountDTO.CommonResponse account) {
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(
-			account.getRole());
+			account.getRole().getValue());
 
 		return Jwts.builder()
 			.setSubject("namingCenterJWT")

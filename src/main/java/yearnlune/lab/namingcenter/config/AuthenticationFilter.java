@@ -14,6 +14,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,58 +43,36 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	public static final String SECRET_KEY = "namingCenter";
 	public static final int DURATION = 600000;
 
-	final LogService logService;
-
-	public AuthenticationFilter(LogService logService) {
-		this.logService = logService;
-	}
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		StringBuilder sb = new StringBuilder();
-		String accountId = null;
-		try {
-			sb.append(request.getMethod());
-			sb.append(" | ");
-			sb.append(request.getRequestURI());
+		ContentCachingRequestWrapper wrapperRequest = new ContentCachingRequestWrapper(request);
+		ContentCachingResponseWrapper wrapperResponse = new ContentCachingResponseWrapper(response);
 
-			if (checkJwtToken(request, response)) {
+		try {
+			if (checkJwtToken(request)) {
 				Claims claims = validateToken(request);
 				if (claims.get("authorities") != null) {
 					setUsernamePasswordAuthentication(claims);
-					accountId = (String)claims.get("id");
 				} else {
 					SecurityContextHolder.clearContext();
 				}
 			}
-			filterChain.doFilter(request, response);
+			filterChain.doFilter(wrapperRequest, wrapperResponse);
 		} catch (SignatureException | ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-			sb.insert(0, "ERROR ");
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+			wrapperResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			wrapperResponse.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} finally {
-			Object sc = SecurityContextHolder.getContext().getAuthentication();
-			if (sc != null) {
-				sb.append(" | " + sc.toString());
-			}
-
-			log.info(sb.toString() + " | " + accountId);
-
-			logService.saveLog(LogService.LogContent.builder()
-				.method(request.getMethod())
-				.remoteAddr(request.getRemoteAddr())
-				.requestUri(request.getRequestURI())
-				.build(), accountId);
+			wrapperResponse.copyBodyToResponse();
 		}
 	}
 
-	private Claims validateToken(HttpServletRequest request) {
+	private static Claims validateToken(HttpServletRequest request) {
 		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
 		return Jwts.parser().setSigningKey(SECRET_KEY.getBytes()).parseClaimsJws(jwtToken).getBody();
 	}
 
-	private void setUsernamePasswordAuthentication(Claims claims) {
+	private static void setUsernamePasswordAuthentication(Claims claims) {
 		List<String> authorities = (List<String>)claims.get("authorities");
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			claims.getSubject(),
@@ -101,8 +81,21 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(auth);
 	}
 
-	private boolean checkJwtToken(HttpServletRequest request, HttpServletResponse res) {
+	private static boolean checkJwtToken(HttpServletRequest request) {
 		String authenticationHeader = request.getHeader(HEADER);
 		return authenticationHeader != null;
+	}
+
+	public static String getAccountIdByToken(HttpServletRequest request) {
+		String accountId = null;
+		if (checkJwtToken(request)) {
+			Claims claims = validateToken(request);
+			if (claims.get("authorities") != null) {
+				setUsernamePasswordAuthentication(claims);
+				accountId = (String)claims.get("id");
+			}
+		}
+
+		return accountId;
 	}
 }

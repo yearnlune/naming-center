@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import yearnlune.lab.namingcenter.type.AccountRoleType;
 
 @NoArgsConstructor
 public class AccountDTO {
@@ -23,7 +24,7 @@ public class AccountDTO {
 
 		private String name;
 
-		private String role;
+		private AccountRoleType role;
 
 		private String jwt;
 	}

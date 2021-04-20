@@ -1,9 +1,12 @@
 package yearnlune.lab.namingcenter.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yearnlune.lab.convertobject.ConvertObject;
 import yearnlune.lab.namingcenter.database.repository.AccountRepository;
@@ -30,6 +33,7 @@ public class LogService {
 		this.accountRepository = accountRepository;
 	}
 
+	@Transactional
 	public void saveLog(LogContent logContent, String accountId) {
 		logRepository.save(Log.builder()
 			.account(accountId == null ? null : accountRepository.findById(accountId).orElse(null))
@@ -38,20 +42,19 @@ public class LogService {
 			.build());
 	}
 
-	@Data
+	@Getter
+	@Builder
+	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class LogContent {
 		private String requestUri;
+
+		private Object requestBody;
 
 		private String remoteAddr;
 
 		private String method;
 
-		@Builder
-		public LogContent(String requestUri, String remoteAddr, String method) {
-			this.requestUri = requestUri;
-			this.remoteAddr = remoteAddr;
-			this.method = method;
-		}
+		private Object responseBody;
 	}
 }
